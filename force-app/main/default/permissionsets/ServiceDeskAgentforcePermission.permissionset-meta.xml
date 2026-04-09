@@ -1,0 +1,80 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<PermissionSet xmlns="http://soap.sforce.com/2006/04/metadata">
+    <description>Grants service desk users all permissions required for Agentforce background agents, including Intelligent Case Prioritization (KAN-12).</description>
+    <hasActivationRequired>false</hasActivationRequired>
+    <label>Service Desk Agentforce Permission</label>
+
+    <!-- ── Case field FLS ─────────────────────────────────────────────── -->
+    <fieldPermissions>
+        <editable>true</editable>
+        <field>Case.Priority</field>
+        <readable>true</readable>
+    </fieldPermissions>
+    <fieldPermissions>
+        <editable>true</editable>
+        <field>Case.Reason</field>
+        <readable>true</readable>
+    </fieldPermissions>
+    <fieldPermissions>
+        <editable>true</editable>
+        <field>Case.Type</field>
+        <readable>true</readable>
+    </fieldPermissions>
+    <fieldPermissions>
+        <editable>false</editable>
+        <field>Case.Description</field>
+        <readable>true</readable>
+    </fieldPermissions>
+
+    <!-- ── Apex class access ──────────────────────────────────────────── -->
+    <classAccesses>
+        <apexClass>CaseAgentTriageJsonParser</apexClass>
+        <enabled>true</enabled>
+    </classAccesses>
+
+    <!-- ── Flow access ────────────────────────────────────────────────── -->
+    <flowAccesses>
+        <enabled>true</enabled>
+        <flow>Intelligent_Case_Prioritization</flow>
+    </flowAccesses>
+
+    <!-- ── Object permissions ─────────────────────────────────────────── -->
+    <objectPermissions>
+        <allowCreate>false</allowCreate>
+        <allowDelete>false</allowDelete>
+        <allowEdit>true</allowEdit>
+        <allowRead>true</allowRead>
+        <modifyAllRecords>false</modifyAllRecords>
+        <object>Case</object>
+        <viewAllRecords>false</viewAllRecords>
+    </objectPermissions>
+    <objectPermissions>
+        <allowCreate>true</allowCreate>
+        <allowDelete>false</allowDelete>
+        <allowEdit>true</allowEdit>
+        <allowRead>true</allowRead>
+        <modifyAllRecords>false</modifyAllRecords>
+        <object>Task</object>
+        <viewAllRecords>false</viewAllRecords>
+    </objectPermissions>
+
+    <!-- ── User permissions ───────────────────────────────────────────── -->
+    <userPermissions>
+        <enabled>true</enabled>
+        <name>RunFlow</name>
+    </userPermissions>
+
+    <!--
+        NOTE: The following permissions are configured in Salesforce Setup UI
+        (not deployable via metadata in all org editions):
+
+        1. Einstein AI Access / Flex Prompt Invocation
+           Setup > Permission Sets > ServiceDeskAgentforcePermission
+           > App Permissions > Agentforce > Enable Einstein AI Access
+
+        2. Einstein Trust Layer — Zero Data Retention
+           Setup > Einstein Trust Layer > confirm ZDR = ON for this org
+
+        These are noted here for the deploying administrator.
+    -->
+</PermissionSet>

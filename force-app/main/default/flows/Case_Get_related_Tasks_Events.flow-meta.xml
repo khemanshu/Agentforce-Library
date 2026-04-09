@@ -1,0 +1,149 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Flow xmlns="http://soap.sforce.com/2006/04/metadata">
+    <apiVersion>62.0</apiVersion>
+    <description>Grounding Prompt Flow — KAN-12. Fetches Tasks and Events related to a Case by Id. Returns JSON for grounding the Intelligent Case Prioritization flex prompt. Reused across multiple agents.</description>
+    <label>Case Get Related Tasks Events</label>
+    <processMetadataValues>
+        <name>BuilderType</name>
+        <value>
+            <stringValue>LightningFlowBuilder</stringValue>
+        </value>
+    </processMetadataValues>
+    <processType>AutoLaunchedFlow</processType>
+    <runInMode>SystemModeWithoutSharing</runInMode>
+
+    <!-- Input variable -->
+    <variables>
+        <name>caseId</name>
+        <dataType>String</dataType>
+        <isCollection>false</isCollection>
+        <isInput>true</isInput>
+        <isOutput>false</isOutput>
+    </variables>
+
+    <!-- Output variable -->
+    <variables>
+        <name>tasksEventsJson</name>
+        <dataType>String</dataType>
+        <isCollection>false</isCollection>
+        <isInput>false</isInput>
+        <isOutput>true</isOutput>
+        <value>
+            <stringValue>[]</stringValue>
+        </value>
+    </variables>
+
+    <!-- Internal collections -->
+    <variables>
+        <name>relatedTasks</name>
+        <dataType>SObject</dataType>
+        <isCollection>true</isCollection>
+        <isInput>false</isInput>
+        <isOutput>false</isOutput>
+        <objectType>Task</objectType>
+    </variables>
+
+    <variables>
+        <name>relatedEvents</name>
+        <dataType>SObject</dataType>
+        <isCollection>true</isCollection>
+        <isInput>false</isInput>
+        <isOutput>false</isOutput>
+        <objectType>Event</objectType>
+    </variables>
+
+    <start>
+        <locationX>176</locationX>
+        <locationY>0</locationY>
+        <connector>
+            <targetReference>Get_Related_Tasks</targetReference>
+        </connector>
+    </start>
+
+    <!-- Lookup: Tasks related to the Case -->
+    <recordLookups>
+        <name>Get_Related_Tasks</name>
+        <label>Get Related Tasks</label>
+        <locationX>176</locationX>
+        <locationY>120</locationY>
+        <assignNullValuesIfNoRecordsFound>false</assignNullValuesIfNoRecordsFound>
+        <filterLogic>and</filterLogic>
+        <filters>
+            <field>WhatId</field>
+            <operator>EqualTo</operator>
+            <value>
+                <elementReference>caseId</elementReference>
+            </value>
+        </filters>
+        <getFirstRecordOnly>false</getFirstRecordOnly>
+        <object>Task</object>
+        <outputReference>relatedTasks</outputReference>
+        <queriedFields>Id</queriedFields>
+        <queriedFields>Subject</queriedFields>
+        <queriedFields>Status</queriedFields>
+        <queriedFields>Description</queriedFields>
+        <queriedFields>ActivityDate</queriedFields>
+        <queriedFields>CreatedDate</queriedFields>
+        <queriedFields>OwnerId</queriedFields>
+        <sortField>CreatedDate</sortField>
+        <sortOrder>Desc</sortOrder>
+        <limit>10</limit>
+        <connector>
+            <targetReference>Get_Related_Events</targetReference>
+        </connector>
+    </recordLookups>
+
+    <!-- Lookup: Events related to the Case -->
+    <recordLookups>
+        <name>Get_Related_Events</name>
+        <label>Get Related Events</label>
+        <locationX>176</locationX>
+        <locationY>240</locationY>
+        <assignNullValuesIfNoRecordsFound>false</assignNullValuesIfNoRecordsFound>
+        <filterLogic>and</filterLogic>
+        <filters>
+            <field>WhatId</field>
+            <operator>EqualTo</operator>
+            <value>
+                <elementReference>caseId</elementReference>
+            </value>
+        </filters>
+        <getFirstRecordOnly>false</getFirstRecordOnly>
+        <object>Event</object>
+        <outputReference>relatedEvents</outputReference>
+        <queriedFields>Id</queriedFields>
+        <queriedFields>Subject</queriedFields>
+        <queriedFields>Description</queriedFields>
+        <queriedFields>StartDateTime</queriedFields>
+        <queriedFields>EndDateTime</queriedFields>
+        <queriedFields>CreatedDate</queriedFields>
+        <sortField>StartDateTime</sortField>
+        <sortOrder>Desc</sortOrder>
+        <limit>10</limit>
+        <connector>
+            <targetReference>Build_Tasks_Events_JSON</targetReference>
+        </connector>
+    </recordLookups>
+
+    <!-- Transform: build JSON string from collections -->
+    <transforms>
+        <name>Build_Tasks_Events_JSON</name>
+        <label>Build Tasks Events JSON</label>
+        <locationX>176</locationX>
+        <locationY>360</locationY>
+        <dataType>String</dataType>
+        <isCollection>false</isCollection>
+        <objectType></objectType>
+        <transformValues>
+            <transformType>Map</transformType>
+            <value>
+                <elementReference>relatedTasks</elementReference>
+            </value>
+        </transformValues>
+        <outputReference>tasksEventsJson</outputReference>
+        <connector>
+            <!-- Flow ends — tasksEventsJson returned to caller -->
+        </connector>
+    </transforms>
+
+</Flow>

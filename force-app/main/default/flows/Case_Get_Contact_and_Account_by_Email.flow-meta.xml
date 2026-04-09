@@ -1,0 +1,145 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Flow xmlns="http://soap.sforce.com/2006/04/metadata">
+    <apiVersion>62.0</apiVersion>
+    <description>Grounding Prompt Flow — KAN-12. Queries Contacts and Accounts matching the supplied email from a Case. Returns JSON for grounding the Intelligent Case Prioritization flex prompt. Reused across multiple agents.</description>
+    <label>Case Get Contact and Account by Email</label>
+    <processMetadataValues>
+        <name>BuilderType</name>
+        <value>
+            <stringValue>LightningFlowBuilder</stringValue>
+        </value>
+    </processMetadataValues>
+    <processType>AutoLaunchedFlow</processType>
+    <runInMode>SystemModeWithoutSharing</runInMode>
+
+    <!-- Input variable -->
+    <variables>
+        <name>suppliedEmail</name>
+        <dataType>String</dataType>
+        <isCollection>false</isCollection>
+        <isInput>true</isInput>
+        <isOutput>false</isOutput>
+    </variables>
+
+    <!-- Output variable -->
+    <variables>
+        <name>contactAccountJson</name>
+        <dataType>String</dataType>
+        <isCollection>false</isCollection>
+        <isInput>false</isInput>
+        <isOutput>true</isOutput>
+        <value>
+            <stringValue>[]</stringValue>
+        </value>
+    </variables>
+
+    <!-- Internal collections -->
+    <variables>
+        <name>matchedContacts</name>
+        <dataType>SObject</dataType>
+        <isCollection>true</isCollection>
+        <isInput>false</isInput>
+        <isOutput>false</isOutput>
+        <objectType>Contact</objectType>
+    </variables>
+
+    <start>
+        <locationX>176</locationX>
+        <locationY>0</locationY>
+        <connector>
+            <targetReference>Check_Email_Not_Blank</targetReference>
+        </connector>
+    </start>
+
+    <!-- Guard: only proceed if email is provided -->
+    <decisions>
+        <name>Check_Email_Not_Blank</name>
+        <label>Email Provided?</label>
+        <locationX>176</locationX>
+        <locationY>120</locationY>
+        <defaultConnector>
+            <!-- No email — return empty JSON array, flow ends -->
+        </defaultConnector>
+        <defaultConnectorLabel>No Email</defaultConnectorLabel>
+        <rules>
+            <name>Email_Exists</name>
+            <conditionLogic>and</conditionLogic>
+            <conditions>
+                <leftValueReference>suppliedEmail</leftValueReference>
+                <operator>IsNull</operator>
+                <rightValue>
+                    <booleanValue>false</booleanValue>
+                </rightValue>
+            </conditions>
+            <conditions>
+                <leftValueReference>suppliedEmail</leftValueReference>
+                <operator>NotEqualTo</operator>
+                <rightValue>
+                    <stringValue></stringValue>
+                </rightValue>
+            </conditions>
+            <connector>
+                <targetReference>Get_Contacts_By_Email</targetReference>
+            </connector>
+            <label>Email Exists</label>
+        </rules>
+    </decisions>
+
+    <!-- Lookup: Contacts matching the email -->
+    <recordLookups>
+        <name>Get_Contacts_By_Email</name>
+        <label>Get Contacts by Email</label>
+        <locationX>176</locationX>
+        <locationY>240</locationY>
+        <assignNullValuesIfNoRecordsFound>false</assignNullValuesIfNoRecordsFound>
+        <filterLogic>and</filterLogic>
+        <filters>
+            <field>Email</field>
+            <operator>EqualTo</operator>
+            <value>
+                <elementReference>suppliedEmail</elementReference>
+            </value>
+        </filters>
+        <getFirstRecordOnly>false</getFirstRecordOnly>
+        <object>Contact</object>
+        <outputReference>matchedContacts</outputReference>
+        <queriedFields>Id</queriedFields>
+        <queriedFields>FirstName</queriedFields>
+        <queriedFields>LastName</queriedFields>
+        <queriedFields>Email</queriedFields>
+        <queriedFields>Title</queriedFields>
+        <queriedFields>AccountId</queriedFields>
+        <queriedFields>Account.Name</queriedFields>
+        <queriedFields>Account.Type</queriedFields>
+        <queriedFields>Account.Industry</queriedFields>
+        <queriedFields>Account.NumberOfEmployees</queriedFields>
+        <sortField>LastName</sortField>
+        <sortOrder>Asc</sortOrder>
+        <limit>5</limit>
+        <connector>
+            <targetReference>Build_Contact_Account_JSON</targetReference>
+        </connector>
+    </recordLookups>
+
+    <!-- Transform: build JSON string from collection -->
+    <transforms>
+        <name>Build_Contact_Account_JSON</name>
+        <label>Build Contact Account JSON</label>
+        <locationX>176</locationX>
+        <locationY>360</locationY>
+        <dataType>String</dataType>
+        <isCollection>false</isCollection>
+        <objectType></objectType>
+        <transformValues>
+            <transformType>Map</transformType>
+            <value>
+                <elementReference>matchedContacts</elementReference>
+            </value>
+        </transformValues>
+        <outputReference>contactAccountJson</outputReference>
+        <connector>
+            <!-- Flow ends — contactAccountJson returned to caller -->
+        </connector>
+    </transforms>
+
+</Flow>

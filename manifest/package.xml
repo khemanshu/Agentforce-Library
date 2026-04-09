@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+    Global Package Manifest — Hexaware Agentforce
+    Contains all components across all agents.
+    Deploy this to install the complete Agentforce solution.
+
+    Per-agent packages are in manifest/agents/:
+      - package-intelligent-case-prioritization.xml
+-->
+<Package xmlns="http://soap.sforce.com/2006/04/metadata">
+    <version>66.0</version>
+
+    <!-- ── Apex Classes ──────────────────────────────────────────────────── -->
+    <types>
+        <name>ApexClass</name>
+        <!-- KAN-12: Intelligent Case Prioritization -->
+        <members>CaseAgentTriageJsonParser</members>
+        <members>CaseAgentTriageJsonParserTest</members>
+    </types>
+
+    <!-- ── Flows ─────────────────────────────────────────────────────────── -->
+    <types>
+        <name>Flow</name>
+        <!-- KAN-12: Intelligent Case Prioritization -->
+        <members>Intelligent_Case_Prioritization</members>
+        <members>Case_Get_Contact_and_Account_by_Email</members>
+        <members>Case_Get_related_Tasks_Events</members>
+    </types>
+
+    <!-- ── Prompt Templates ───────────────────────────────────────────────── -->
+    <types>
+        <name>PromptTemplate</name>
+        <!-- KAN-12: Intelligent Case Prioritization -->
+        <members>Intelligent_Case_Prioritization</members>
+    </types>
+
+    <!-- ── Permission Sets ───────────────────────────────────────────────── -->
+    <types>
+        <name>PermissionSet</name>
+        <!-- Shared: all Agentforce agents -->
+        <members>ServiceDeskAgentforcePermission</members>
+    </types>
+
+    <!-- ── Custom Fields ─────────────────────────────────────────────────── -->
+    <types>
+        <name>CustomField</name>
+        <!-- KAN-12: Case picklist verification -->
+        <members>Case.Priority</members>
+        <members>Case.Reason</members>
+        <members>Case.Type</members>
+    </types>
+
+</Package>

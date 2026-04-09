@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+    Agent: Intelligent Case Prioritization
+    Deploy this package to install only the Intelligent Case Prioritization agent components.
+-->
+<Package xmlns="http://soap.sforce.com/2006/04/metadata">
+    <version>66.0</version>
+
+    <types>
+        <name>ApexClass</name>
+        <members>CaseAgentTriageJsonParser</members>
+        <members>CaseAgentTriageJsonParserTest</members>
+    </types>
+
+    <types>
+        <name>Flow</name>
+        <members>Intelligent_Case_Prioritization</members>
+        <members>Case_Get_Contact_and_Account_by_Email</members>
+        <members>Case_Get_related_Tasks_Events</members>
+    </types>
+
+    <types>
+        <name>PromptTemplate</name>
+        <members>Intelligent_Case_Prioritization</members>
+    </types>
+
+    <types>
+        <name>PermissionSet</name>
+        <members>ServiceDeskAgentforcePermission</members>
+    </types>
+
+    <types>
+        <name>CustomField</name>
+        <members>Case.Priority</members>
+        <members>Case.Reason</members>
+        <members>Case.Type</members>
+    </types>
+
+</Package>

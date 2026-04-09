@@ -1,0 +1,70 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<PromptTemplate xmlns="http://soap.sforce.com/2006/04/metadata">
+    <apiVersion>62.0</apiVersion>
+    <description>Analyses the Case Subject, Description, and linked Contact/Account context to assign Priority, Reason, and Type. Returns structured JSON only. KAN-12.</description>
+    <developerName>Intelligent_Case_Prioritization</developerName>
+    <masterLabel>Intelligent Case Prioritization</masterLabel>
+    <templateType>Flex</templateType>
+    <templateVersions>
+        <content>You are an expert service desk triage assistant. Analyse the support case below and return ONLY a valid JSON object — no markdown, no explanation, no text outside the JSON.
+
+## Case Information
+Subject: {!$Input:Case.Subject}
+Description: {!$Input:Case.Description}
+Status: {!$Input:Case.Status}
+Origin: {!$Input:Case.Origin}
+
+## Contact and Account Context
+{!$Input:ContactAccountContext}
+
+## Related Activity (Tasks and Events)
+{!$Input:RelatedTasksEventsContext}
+
+## Instructions
+Based on the information above, determine:
+1. **priority** — how urgent this case is
+2. **reason** — the most likely root cause
+3. **type** — the category of support required
+
+## Allowed values (you MUST use exactly one of these — no other values are accepted)
+
+priority: Low | Medium | High | Critical
+reason: User didn't attend training | Complex functionality | Existing problem | Instructions not clear | New problem
+type: Product Support | Account Support | General | Technical Issue
+
+## Self-Check (verify ALL before responding)
+- [ ] priority is exactly one of: Low, Medium, High, Critical
+- [ ] reason is exactly one of the 5 allowed reason values
+- [ ] type is exactly one of the 4 allowed type values
+- [ ] The response contains ONLY a JSON object — no text before or after
+- [ ] There are no markdown code fences (``` or ```json)
+- [ ] There are no trailing commas or syntax errors in the JSON
+
+## Required Output Format
+{"priority":"&lt;value&gt;","reason":"&lt;value&gt;","type":"&lt;value&gt;"}
+</content>
+        <inputs>
+            <apiName>Case</apiName>
+            <definition>merge_field_set</definition>
+            <masterLabel>Case</masterLabel>
+            <referenceName>$Input:Case</referenceName>
+            <requireGrounding>true</requireGrounding>
+            <sobjectType>Case</sobjectType>
+        </inputs>
+        <inputs>
+            <apiName>ContactAccountContext</apiName>
+            <definition>text</definition>
+            <masterLabel>Contact and Account Context</masterLabel>
+            <referenceName>$Input:ContactAccountContext</referenceName>
+            <requireGrounding>false</requireGrounding>
+        </inputs>
+        <inputs>
+            <apiName>RelatedTasksEventsContext</apiName>
+            <definition>text</definition>
+            <masterLabel>Related Tasks and Events Context</masterLabel>
+            <referenceName>$Input:RelatedTasksEventsContext</referenceName>
+            <requireGrounding>false</requireGrounding>
+        </inputs>
+        <status>Active</status>
+    </templateVersions>
+</PromptTemplate>

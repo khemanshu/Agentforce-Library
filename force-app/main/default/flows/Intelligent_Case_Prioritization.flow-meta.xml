@@ -1,0 +1,319 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Flow xmlns="http://soap.sforce.com/2006/04/metadata">
+    <apiVersion>62.0</apiVersion>
+    <description>Intelligent Case Prioritization — KAN-12. Fires synchronously on Case Create. Invokes the Intelligent_Case_Prioritization flex prompt and writes Priority, Reason, and Type back to the Case. Falls back to a Task on failure.</description>
+    <label>Intelligent Case Prioritization</label>
+    <processMetadataValues>
+        <name>BuilderType</name>
+        <value>
+            <stringValue>LightningFlowBuilder</stringValue>
+        </value>
+    </processMetadataValues>
+    <processType>AutoLaunchedFlow</processType>
+    <runInMode>SystemModeWithoutSharing</runInMode>
+    <start>
+        <locationX>176</locationX>
+        <locationY>0</locationY>
+        <filterLogic>and</filterLogic>
+        <filters>
+            <field>Description</field>
+            <operator>IsNull</operator>
+            <value>
+                <booleanValue>false</booleanValue>
+            </value>
+        </filters>
+        <object>Case</object>
+        <recordTriggerType>Create</recordTriggerType>
+        <scheduledPaths>
+            <!-- Immediate path for Intelligent Case Prioritization -->
+        </scheduledPaths>
+        <triggerType>RecordAfterSave</triggerType>
+        <connector>
+            <targetReference>Call_Contact_Account_Prompt_Flow</targetReference>
+        </connector>
+    </start>
+
+    <!-- ═══════════════════════════════════════════════════════════════════
+         IMMEDIATE PATH — Steps 2-8
+         ═══════════════════════════════════════════════════════════════════ -->
+
+    <!-- Step 2: Call Prompt Flow — Case_Get_Contact_and_Account_by_Email -->
+    <actionCalls>
+        <name>Call_Contact_Account_Prompt_Flow</name>
+        <label>Get Contact and Account by Email</label>
+        <locationX>176</locationX>
+        <locationY>120</locationY>
+        <actionName>Case_Get_Contact_and_Account_by_Email</actionName>
+        <actionType>flow</actionType>
+        <faultConnector>
+            <targetReference>Create_Triage_Failed_Task</targetReference>
+        </faultConnector>
+        <inputParameters>
+            <name>suppliedEmail</name>
+            <value>
+                <elementReference>$Record.SuppliedEmail</elementReference>
+            </value>
+        </inputParameters>
+        <outputParameters>
+            <assignToReference>ContactAccountContext</assignToReference>
+            <name>contactAccountJson</name>
+        </outputParameters>
+        <connector>
+            <targetReference>Call_Related_Tasks_Events_Prompt_Flow</targetReference>
+        </connector>
+    </actionCalls>
+
+    <!-- Step 3: Call Prompt Flow — Case_Get_related_Tasks_Events -->
+    <actionCalls>
+        <name>Call_Related_Tasks_Events_Prompt_Flow</name>
+        <label>Get Related Tasks and Events</label>
+        <locationX>176</locationX>
+        <locationY>240</locationY>
+        <actionName>Case_Get_related_Tasks_Events</actionName>
+        <actionType>flow</actionType>
+        <faultConnector>
+            <targetReference>Create_Triage_Failed_Task</targetReference>
+        </faultConnector>
+        <inputParameters>
+            <name>caseId</name>
+            <value>
+                <elementReference>$Record.Id</elementReference>
+            </value>
+        </inputParameters>
+        <outputParameters>
+            <assignToReference>RelatedTasksEventsContext</assignToReference>
+            <name>tasksEventsJson</name>
+        </outputParameters>
+        <connector>
+            <targetReference>Invoke_Flex_Prompt_Template</targetReference>
+        </connector>
+    </actionCalls>
+
+    <!-- Step 4: Invoke Flex Prompt Template — Intelligent_Case_Prioritization -->
+    <actionCalls>
+        <name>Invoke_Flex_Prompt_Template</name>
+        <label>Invoke Intelligent Case Prioritization Prompt</label>
+        <locationX>176</locationX>
+        <locationY>360</locationY>
+        <actionName>Intelligent_Case_Prioritization</actionName>
+        <actionType>promptTemplateGenerations</actionType>
+        <faultConnector>
+            <targetReference>Create_Triage_Failed_Task</targetReference>
+        </faultConnector>
+        <inputParameters>
+            <name>Input:Case</name>
+            <value>
+                <elementReference>$Record</elementReference>
+            </value>
+        </inputParameters>
+        <inputParameters>
+            <name>Input:ContactAccountContext</name>
+            <value>
+                <elementReference>ContactAccountContext</elementReference>
+            </value>
+        </inputParameters>
+        <inputParameters>
+            <name>Input:RelatedTasksEventsContext</name>
+            <value>
+                <elementReference>RelatedTasksEventsContext</elementReference>
+            </value>
+        </inputParameters>
+        <outputParameters>
+            <assignToReference>PromptResponse</assignToReference>
+            <name>Prompt:Output</name>
+        </outputParameters>
+        <connector>
+            <targetReference>Parse_Triage_JSON</targetReference>
+        </connector>
+    </actionCalls>
+
+    <!-- Step 5: Call Apex — CaseAgentTriageJsonParser -->
+    <actionCalls>
+        <name>Parse_Triage_JSON</name>
+        <label>Parse Case Triage JSON</label>
+        <locationX>176</locationX>
+        <locationY>480</locationY>
+        <actionName>CaseAgentTriageJsonParser</actionName>
+        <actionType>apex</actionType>
+        <faultConnector>
+            <targetReference>Create_Triage_Failed_Task</targetReference>
+        </faultConnector>
+        <inputParameters>
+            <name>json</name>
+            <value>
+                <elementReference>PromptResponse</elementReference>
+            </value>
+        </inputParameters>
+        <outputParameters>
+            <assignToReference>ParseIsSuccess</assignToReference>
+            <name>isSuccess</name>
+        </outputParameters>
+        <outputParameters>
+            <assignToReference>ParsedPriority</assignToReference>
+            <name>priority</name>
+        </outputParameters>
+        <outputParameters>
+            <assignToReference>ParsedReason</assignToReference>
+            <name>reason</name>
+        </outputParameters>
+        <outputParameters>
+            <assignToReference>ParsedType</assignToReference>
+            <name>caseType</name>
+        </outputParameters>
+        <connector>
+            <targetReference>Check_Parse_Success</targetReference>
+        </connector>
+    </actionCalls>
+
+    <!-- Step 6: Decision — isSuccess = true? -->
+    <decisions>
+        <name>Check_Parse_Success</name>
+        <label>Parse Successful?</label>
+        <locationX>176</locationX>
+        <locationY>600</locationY>
+        <defaultConnector>
+            <targetReference>Create_Triage_Failed_Task</targetReference>
+        </defaultConnector>
+        <defaultConnectorLabel>Failure</defaultConnectorLabel>
+        <rules>
+            <name>Parse_Success</name>
+            <conditionLogic>and</conditionLogic>
+            <conditions>
+                <leftValueReference>ParseIsSuccess</leftValueReference>
+                <operator>EqualTo</operator>
+                <rightValue>
+                    <booleanValue>true</booleanValue>
+                </rightValue>
+            </conditions>
+            <connector>
+                <targetReference>Update_Case_Fields</targetReference>
+            </connector>
+            <label>Success</label>
+        </rules>
+    </decisions>
+
+    <!-- Step 7: Update Records — Case fields -->
+    <recordUpdates>
+        <name>Update_Case_Fields</name>
+        <label>Update Case Priority, Reason, and Type</label>
+        <locationX>0</locationX>
+        <locationY>720</locationY>
+        <inputAssignments>
+            <field>Priority</field>
+            <value>
+                <elementReference>ParsedPriority</elementReference>
+            </value>
+        </inputAssignments>
+        <inputAssignments>
+            <field>Reason</field>
+            <value>
+                <elementReference>ParsedReason</elementReference>
+            </value>
+        </inputAssignments>
+        <inputAssignments>
+            <field>Type</field>
+            <value>
+                <elementReference>ParsedType</elementReference>
+            </value>
+        </inputAssignments>
+        <object>Case</object>
+        <inputReference>$Record</inputReference>
+    </recordUpdates>
+
+    <!-- Step 8: Fault Path — Create Task -->
+    <recordCreates>
+        <name>Create_Triage_Failed_Task</name>
+        <label>Create AI Triage Failed Task</label>
+        <locationX>352</locationX>
+        <locationY>720</locationY>
+        <inputAssignments>
+            <field>Subject</field>
+            <value>
+                <stringValue>AI Triage Failed — Manual Review Required</stringValue>
+            </value>
+        </inputAssignments>
+        <inputAssignments>
+            <field>WhatId</field>
+            <value>
+                <elementReference>$Record.Id</elementReference>
+            </value>
+        </inputAssignments>
+        <inputAssignments>
+            <field>Status</field>
+            <value>
+                <stringValue>Open</stringValue>
+            </value>
+        </inputAssignments>
+        <inputAssignments>
+            <field>Priority</field>
+            <value>
+                <stringValue>High</stringValue>
+            </value>
+        </inputAssignments>
+        <object>Task</object>
+    </recordCreates>
+
+    <!-- ═══════════════════════════════════════════════════════════════════
+         FLOW VARIABLES
+         ═══════════════════════════════════════════════════════════════════ -->
+
+    <variables>
+        <name>ContactAccountContext</name>
+        <dataType>String</dataType>
+        <isCollection>false</isCollection>
+        <isInput>false</isInput>
+        <isOutput>false</isOutput>
+    </variables>
+
+    <variables>
+        <name>RelatedTasksEventsContext</name>
+        <dataType>String</dataType>
+        <isCollection>false</isCollection>
+        <isInput>false</isInput>
+        <isOutput>false</isOutput>
+    </variables>
+
+    <variables>
+        <name>PromptResponse</name>
+        <dataType>String</dataType>
+        <isCollection>false</isCollection>
+        <isInput>false</isInput>
+        <isOutput>false</isOutput>
+    </variables>
+
+    <variables>
+        <name>ParseIsSuccess</name>
+        <dataType>Boolean</dataType>
+        <isCollection>false</isCollection>
+        <isInput>false</isInput>
+        <isOutput>false</isOutput>
+        <value>
+            <booleanValue>false</booleanValue>
+        </value>
+    </variables>
+
+    <variables>
+        <name>ParsedPriority</name>
+        <dataType>String</dataType>
+        <isCollection>false</isCollection>
+        <isInput>false</isInput>
+        <isOutput>false</isOutput>
+    </variables>
+
+    <variables>
+        <name>ParsedReason</name>
+        <dataType>String</dataType>
+        <isCollection>false</isCollection>
+        <isInput>false</isInput>
+        <isOutput>false</isOutput>
+    </variables>
+
+    <variables>
+        <name>ParsedType</name>
+        <dataType>String</dataType>
+        <isCollection>false</isCollection>
+        <isInput>false</isInput>
+        <isOutput>false</isOutput>
+    </variables>
+
+</Flow>

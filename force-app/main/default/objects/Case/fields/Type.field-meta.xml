@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+    Standard Case.Type field — KAN-12 verification stub.
+    Ensures all 4 required picklist values are active.
+-->
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>Type</fullName>
+    <label>Case Type</label>
+    <type>Picklist</type>
+    <valueSet>
+        <restricted>true</restricted>
+        <valueSetDefinition>
+            <sorted>false</sorted>
+            <value>
+                <fullName>Product Support</fullName>
+                <default>false</default>
+                <label>Product Support</label>
+            </value>
+            <value>
+                <fullName>Account Support</fullName>
+                <default>false</default>
+                <label>Account Support</label>
+            </value>
+            <value>
+                <fullName>General</fullName>
+                <default>false</default>
+                <label>General</label>
+            </value>
+            <value>
+                <fullName>Technical Issue</fullName>
+                <default>false</default>
+                <label>Technical Issue</label>
+            </value>
+        </valueSetDefinition>
+    </valueSet>
+</CustomField>
