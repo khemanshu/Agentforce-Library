@@ -29,7 +29,7 @@
 
     <!-- ── Prompt Templates ───────────────────────────────────────────────── -->
     <types>
-        <name>PromptTemplate</name>
+        <name>GenAiPromptTemplate</name>
         <!-- KAN-12: Intelligent Case Prioritization -->
         <members>Intelligent_Case_Prioritization</members>
     </types>
@@ -41,13 +41,5 @@
         <members>ServiceDeskAgentforcePermission</members>
     </types>
 
-    <!-- ── Custom Fields ─────────────────────────────────────────────────── -->
-    <types>
-        <name>CustomField</name>
-        <!-- KAN-12: Case picklist verification -->
-        <members>Case.Priority</members>
-        <members>Case.Reason</members>
-        <members>Case.Type</members>
-    </types>
 
 </Package>

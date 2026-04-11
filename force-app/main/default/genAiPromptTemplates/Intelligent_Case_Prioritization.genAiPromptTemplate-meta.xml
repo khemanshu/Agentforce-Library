@@ -1,10 +1,10 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<PromptTemplate xmlns="http://soap.sforce.com/2006/04/metadata">
-    <apiVersion>62.0</apiVersion>
+<GenAiPromptTemplate xmlns="http://soap.sforce.com/2006/04/metadata">
     <description>Analyses the Case Subject, Description, and linked Contact/Account context to assign Priority, Reason, and Type. Returns structured JSON only. KAN-12.</description>
-    <developerName>Intelligent_Case_Prioritization</developerName>
     <masterLabel>Intelligent Case Prioritization</masterLabel>
-    <templateType>Flex</templateType>
+    <relatedEntity>Case</relatedEntity>
+    <type>einstein_gpt__flex</type>
+    <visibility>Global</visibility>
     <templateVersions>
         <content>You are an expert service desk triage assistant. Analyse the support case below and return ONLY a valid JSON object — no markdown, no explanation, no text outside the JSON.
 
@@ -15,10 +15,10 @@ Status: {!$Input:Case.Status}
 Origin: {!$Input:Case.Origin}
 
 ## Contact and Account Context
-{!$Input:ContactAccountContext}
+{!$Flow:Case_Get_Contact_and_Account_by_Email.contactAccountJson}
 
 ## Related Activity (Tasks and Events)
-{!$Input:RelatedTasksEventsContext}
+{!$Flow:Case_Get_related_Tasks_Events.tasksEventsJson}
 
 ## Instructions
 Based on the information above, determine:
@@ -45,26 +45,31 @@ type: Product Support | Account Support | General | Technical Issue
 </content>
         <inputs>
             <apiName>Case</apiName>
-            <definition>merge_field_set</definition>
-            <masterLabel>Case</masterLabel>
-            <referenceName>$Input:Case</referenceName>
-            <requireGrounding>true</requireGrounding>
-            <sobjectType>Case</sobjectType>
+            <definition>SOBJECT://Case</definition>
+            <referenceName>Input:Case</referenceName>
+            <required>true</required>
         </inputs>
-        <inputs>
-            <apiName>ContactAccountContext</apiName>
-            <definition>text</definition>
-            <masterLabel>Contact and Account Context</masterLabel>
-            <referenceName>$Input:ContactAccountContext</referenceName>
-            <requireGrounding>false</requireGrounding>
-        </inputs>
-        <inputs>
-            <apiName>RelatedTasksEventsContext</apiName>
-            <definition>text</definition>
-            <masterLabel>Related Tasks and Events Context</masterLabel>
-            <referenceName>$Input:RelatedTasksEventsContext</referenceName>
-            <requireGrounding>false</requireGrounding>
-        </inputs>
-        <status>Active</status>
+        <primaryModel>sfdc_ai__DefaultBedrockAnthropicClaude3Sonnet</primaryModel>
+        <status>Published</status>
+        <templateDataProviders>
+            <definition>flow://Case_Get_Contact_and_Account_by_Email</definition>
+            <parameters>
+                <definition>SOBJECT://Case</definition>
+                <isRequired>true</isRequired>
+                <parameterName>inputCase</parameterName>
+                <valueExpression>{!$Input:Case}</valueExpression>
+            </parameters>
+            <referenceName>Flow:Case_Get_Contact_and_Account_by_Email</referenceName>
+        </templateDataProviders>
+        <templateDataProviders>
+            <definition>flow://Case_Get_related_Tasks_Events</definition>
+            <parameters>
+                <definition>SOBJECT://Case</definition>
+                <isRequired>true</isRequired>
+                <parameterName>inputCase</parameterName>
+                <valueExpression>{!$Input:Case}</valueExpression>
+            </parameters>
+            <referenceName>Flow:Case_Get_related_Tasks_Events</referenceName>
+        </templateDataProviders>
     </templateVersions>
-</PromptTemplate>
+</GenAiPromptTemplate>

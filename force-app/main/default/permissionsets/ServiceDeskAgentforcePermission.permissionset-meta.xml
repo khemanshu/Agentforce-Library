@@ -32,12 +32,6 @@
         <enabled>true</enabled>
     </classAccesses>
 
-    <!-- ── Flow access ────────────────────────────────────────────────── -->
-    <flowAccesses>
-        <enabled>true</enabled>
-        <flow>Intelligent_Case_Prioritization</flow>
-    </flowAccesses>
-
     <!-- ── Object permissions ─────────────────────────────────────────── -->
     <objectPermissions>
         <allowCreate>false</allowCreate>
