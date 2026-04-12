@@ -6,43 +6,41 @@
 
     Per-agent packages are in manifest/agents/:
       - package-intelligent-case-prioritization.xml  (KAN-12)
-      - package-KAN-13.xml                           (KAN-13)
+      - package-auto-assign-account-and-contact.xml  (KAN-13)
 -->
 <Package xmlns="http://soap.sforce.com/2006/04/metadata">
     <version>66.0</version>
 
     <!-- ── Apex Classes ──────────────────────────────────────────────────── -->
     <types>
-        <n>ApexClass</n>
-        <!-- KAN-12: Intelligent Case Prioritization -->
         <members>CaseAgentTriageJsonParser</members>
         <members>CaseAgentTriageJsonParserTest</members>
+        <name>ApexClass</name>
     </types>
 
     <!-- ── Flows ─────────────────────────────────────────────────────────── -->
     <types>
-        <n>Flow</n>
-        <!-- KAN-12 + KAN-13: Shared orchestration flow (updated for KAN-13 scheduled path) -->
+        <!-- KAN-12 + KAN-13: Shared orchestration flow -->
         <members>Intelligent_Case_Prioritization</members>
         <!-- KAN-12: Grounding flows (reused by KAN-13) -->
         <members>Case_Get_Contact_and_Account_by_Email</members>
         <members>Case_Get_related_Tasks_Events</members>
+        <name>Flow</name>
     </types>
 
     <!-- ── Prompt Templates ───────────────────────────────────────────────── -->
     <types>
-        <n>GenAiPromptTemplate</n>
         <!-- KAN-12: Intelligent Case Prioritization -->
         <members>Intelligent_Case_Prioritization</members>
         <!-- KAN-13: Auto Assign Account and Contact -->
         <members>Case_Get_Matching_Contact_and_Account</members>
+        <name>GenAiPromptTemplate</name>
     </types>
 
     <!-- ── Permission Sets ───────────────────────────────────────────────── -->
     <types>
-        <n>PermissionSet</n>
-        <!-- Shared: all Agentforce agents -->
         <members>ServiceDeskAgentforcePermission</members>
+        <name>PermissionSet</name>
     </types>
 
 </Package>

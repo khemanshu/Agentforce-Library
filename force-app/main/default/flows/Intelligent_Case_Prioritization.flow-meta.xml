@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <Flow xmlns="http://soap.sforce.com/2006/04/metadata">
     <apiVersion>65.0</apiVersion>
-    <description>Intelligent Case Prioritization — KAN-12 (immediate path) + Auto Assign Account and Contact — KAN-13 (scheduled path +1 min). Fires on Case Create. Immediate path assigns Priority, Reason, and Type. Scheduled path (+1 min) auto-assigns ContactId and AccountId via LLM match, then re-fetches Case for downstream agents.</description>
+    <description>Intelligent Case Prioritization — KAN-12 (immediate path) + Auto Assign Account and Contact — KAN-13 (scheduled path +1 min). Fires on Case Create. Immediate path assigns Priority, Reason, and Type. Scheduled path (+1 min) auto-assigns ContactId and AccountId, then re-fetches Case for downstream agents.</description>
     <label>Intelligent Case Prioritization</label>
     <interviewLabel>Intelligent Case Prioritization {!$Flow.CurrentDateTime}</interviewLabel>
     <processType>AutoLaunchedFlow</processType>
@@ -11,8 +11,19 @@
     <areMetricsLoggedToDataCloud>false</areMetricsLoggedToDataCloud>
 
     <!-- ── Variables ─────────────────────────────────────────────────────── -->
+
+    <!-- KAN-12 -->
     <variables>
-        <n>PromptResponseText</n>
+        <name>PromptResponseText</name>
+        <dataType>String</dataType>
+        <isCollection>false</isCollection>
+        <isInput>false</isInput>
+        <isOutput>false</isOutput>
+    </variables>
+
+    <!-- KAN-13 -->
+    <variables>
+        <name>ContactAccountMatchJson</name>
         <dataType>String</dataType>
         <isCollection>false</isCollection>
         <isInput>false</isInput>
@@ -20,15 +31,7 @@
     </variables>
 
     <variables>
-        <n>ContactAccountMatchJson</n>
-        <dataType>String</dataType>
-        <isCollection>false</isCollection>
-        <isInput>false</isInput>
-        <isOutput>false</isOutput>
-    </variables>
-
-    <variables>
-        <n>UpdatedCase</n>
+        <name>UpdatedCase</name>
         <dataType>SObject</dataType>
         <isCollection>false</isCollection>
         <isInput>false</isInput>
@@ -36,13 +39,11 @@
         <objectType>Case</objectType>
     </variables>
 
-    <!-- ═══════════════════════════════════════════════════════════════════════
-         IMMEDIATE PATH — KAN-12: Intelligent Case Prioritization
-    ═══════════════════════════════════════════════════════════════════════════ -->
+    <!-- ── Action Calls ───────────────────────────────────────────────────── -->
 
-    <!-- Step 2: Invoke Flex Prompt Template -->
+    <!-- KAN-12: Step 2 — Invoke Flex Prompt Template -->
     <actionCalls>
-        <n>Generate_Case_Priority</n>
+        <name>Generate_Case_Priority</name>
         <label>Generate Case Priority</label>
         <locationX>0</locationX>
         <locationY>0</locationY>
@@ -56,22 +57,22 @@
         </faultConnector>
         <flowTransactionModel>CurrentTransaction</flowTransactionModel>
         <inputParameters>
-            <n>Input:Case</n>
+            <name>Input:Case</name>
             <value>
                 <elementReference>$Record</elementReference>
             </value>
         </inputParameters>
         <outputParameters>
             <assignToReference>PromptResponseText</assignToReference>
-            <n>promptResponse</n>
+            <name>promptResponse</name>
         </outputParameters>
         <nameSegment>Intelligent_Case_Prioritization</nameSegment>
         <offset>0</offset>
     </actionCalls>
 
-    <!-- Step 3: Call Apex — CaseAgentTriageJsonParser -->
+    <!-- KAN-12: Step 3 — Call Apex CaseAgentTriageJsonParser -->
     <actionCalls>
-        <n>Parse_Agent_Triage_JSON</n>
+        <name>Parse_Agent_Triage_JSON</name>
         <label>Parse Agent Triage JSON</label>
         <locationX>0</locationX>
         <locationY>0</locationY>
@@ -85,7 +86,7 @@
         </faultConnector>
         <flowTransactionModel>Automatic</flowTransactionModel>
         <inputParameters>
-            <n>json</n>
+            <name>json</name>
             <value>
                 <elementReference>PromptResponseText</elementReference>
             </value>
@@ -95,13 +96,9 @@
         <storeOutputAutomatically>true</storeOutputAutomatically>
     </actionCalls>
 
-    <!-- ═══════════════════════════════════════════════════════════════════════
-         SCHEDULED PATH — KAN-13: Auto Assign Account and Contact (+1 min)
-    ═══════════════════════════════════════════════════════════════════════════ -->
-
-    <!-- Step 1: Invoke Prompt Template to find best Contact + Account match -->
+    <!-- KAN-13: Scheduled Path Step 1 — Invoke Prompt to find Contact + Account -->
     <actionCalls>
-        <n>Generate_Contact_Account_Match</n>
+        <name>Generate_Contact_Account_Match</name>
         <label>Generate Contact Account Match</label>
         <locationX>0</locationX>
         <locationY>0</locationY>
@@ -115,22 +112,22 @@
         </faultConnector>
         <flowTransactionModel>CurrentTransaction</flowTransactionModel>
         <inputParameters>
-            <n>Input:Case</n>
+            <name>Input:Case</name>
             <value>
                 <elementReference>$Record</elementReference>
             </value>
         </inputParameters>
         <outputParameters>
             <assignToReference>ContactAccountMatchJson</assignToReference>
-            <n>promptResponse</n>
+            <name>promptResponse</name>
         </outputParameters>
         <nameSegment>Case_Get_Matching_Contact_and_Account</nameSegment>
         <offset>0</offset>
     </actionCalls>
 
-    <!-- Step 2: Parse JSON — reuse CaseAgentTriageJsonParser -->
+    <!-- KAN-13: Scheduled Path Step 2 — Parse JSON via CaseAgentTriageJsonParser -->
     <actionCalls>
-        <n>Parse_Contact_Account_JSON</n>
+        <name>Parse_Contact_Account_JSON</name>
         <label>Parse Contact Account JSON</label>
         <locationX>0</locationX>
         <locationY>0</locationY>
@@ -144,7 +141,7 @@
         </faultConnector>
         <flowTransactionModel>Automatic</flowTransactionModel>
         <inputParameters>
-            <n>json</n>
+            <name>json</name>
             <value>
                 <elementReference>ContactAccountMatchJson</elementReference>
             </value>
@@ -156,15 +153,15 @@
 
     <!-- ── Decisions ──────────────────────────────────────────────────────── -->
 
-    <!-- Immediate path: Step 1 guard — Description not null -->
+    <!-- KAN-12: Step 1 guard — Description not null -->
     <decisions>
-        <n>Check_Case_Description</n>
+        <name>Check_Case_Description</name>
         <label>Check Case Description</label>
         <locationX>0</locationX>
         <locationY>0</locationY>
         <defaultConnectorLabel>No Description</defaultConnectorLabel>
         <rules>
-            <n>Description_Exists</n>
+            <name>Description_Exists</name>
             <conditionLogic>and</conditionLogic>
             <conditions>
                 <leftValueReference>$Record.Description</leftValueReference>
@@ -180,9 +177,9 @@
         </rules>
     </decisions>
 
-    <!-- Immediate path: Step 4 — isSuccess = true? -->
+    <!-- KAN-12: Step 4 — isSuccess = true? -->
     <decisions>
-        <n>Check_Parse_Success</n>
+        <name>Check_Parse_Success</name>
         <label>Check If Parsing is Success</label>
         <locationX>0</locationX>
         <locationY>0</locationY>
@@ -191,7 +188,7 @@
             <targetReference>Create_Triage_Failed_Task</targetReference>
         </defaultConnector>
         <rules>
-            <n>Is_Success</n>
+            <name>Is_Success</name>
             <conditionLogic>and</conditionLogic>
             <conditions>
                 <leftValueReference>Parse_Agent_Triage_JSON.isSuccess</leftValueReference>
@@ -207,9 +204,9 @@
         </rules>
     </decisions>
 
-    <!-- Scheduled path: Step 3 — isSuccess = true? -->
+    <!-- KAN-13: Scheduled Path Step 3 — isSuccess = true? -->
     <decisions>
-        <n>Check_Auto_Assign_Success</n>
+        <name>Check_Auto_Assign_Success</name>
         <label>Check If Auto Assign Succeeded</label>
         <locationX>0</locationX>
         <locationY>0</locationY>
@@ -218,7 +215,7 @@
             <targetReference>Create_Auto_Assign_Failed_Task</targetReference>
         </defaultConnector>
         <rules>
-            <n>Auto_Assign_Success</n>
+            <name>Auto_Assign_Success</name>
             <conditionLogic>and</conditionLogic>
             <conditions>
                 <leftValueReference>Parse_Contact_Account_JSON.isSuccess</leftValueReference>
@@ -236,9 +233,9 @@
 
     <!-- ── Record Creates ─────────────────────────────────────────────────── -->
 
-    <!-- Immediate path fault Task -->
+    <!-- KAN-12: Fault Path Task -->
     <recordCreates>
-        <n>Create_Triage_Failed_Task</n>
+        <name>Create_Triage_Failed_Task</name>
         <label>Create AI Triage Failed Task</label>
         <locationX>0</locationX>
         <locationY>0</locationY>
@@ -269,9 +266,9 @@
         <object>Task</object>
     </recordCreates>
 
-    <!-- Scheduled path fault Task -->
+    <!-- KAN-13: Scheduled Path Fault Task -->
     <recordCreates>
-        <n>Create_Auto_Assign_Failed_Task</n>
+        <name>Create_Auto_Assign_Failed_Task</name>
         <label>Create AI Auto-Assign Failed Task</label>
         <locationX>0</locationX>
         <locationY>0</locationY>
@@ -304,9 +301,9 @@
 
     <!-- ── Record Updates ─────────────────────────────────────────────────── -->
 
-    <!-- Immediate path: Step 5 — Update Case Priority, Reason, Type -->
+    <!-- KAN-12: Step 5 — Update Case Priority, Reason, Type -->
     <recordUpdates>
-        <n>Update_Case_Priority</n>
+        <name>Update_Case_Priority</name>
         <label>Update Case Priority, Reason and Type</label>
         <locationX>0</locationX>
         <locationY>0</locationY>
@@ -331,9 +328,9 @@
         <inputReference>$Record</inputReference>
     </recordUpdates>
 
-    <!-- Scheduled path: Step 4 — Assign ContactId and AccountId -->
+    <!-- KAN-13: Scheduled Path Step 4 — Assign ContactId and AccountId -->
     <recordUpdates>
-        <n>Assign_Contact_and_Account</n>
+        <name>Assign_Contact_and_Account</name>
         <label>Assign Contact and Account to Case</label>
         <locationX>0</locationX>
         <locationY>0</locationY>
@@ -357,9 +354,9 @@
 
     <!-- ── Record Lookups ─────────────────────────────────────────────────── -->
 
-    <!-- Scheduled path: Step 5 — Re-fetch updated Case for downstream agents -->
+    <!-- KAN-13: Scheduled Path Step 5 — Re-fetch updated Case for downstream agents -->
     <recordLookups>
-        <n>Get_Updated_Case_After_Assign</n>
+        <name>Get_Updated_Case_After_Assign</name>
         <label>Get Updated Case After Assign</label>
         <locationX>0</locationX>
         <locationY>0</locationY>
@@ -404,7 +401,7 @@
         <recordTriggerType>Create</recordTriggerType>
         <scheduledPaths>
             <!-- KAN-13: Auto Assign Account and Contact — fires 1 min after Case creation -->
-            <n>Send_Acknowledge_Email_to_Customer</n>
+            <name>Send_Acknowledge_Email_to_Customer</name>
             <label>Auto Assign Account and Contact (KAN-13)</label>
             <connector>
                 <targetReference>Generate_Contact_Account_Match</targetReference>
