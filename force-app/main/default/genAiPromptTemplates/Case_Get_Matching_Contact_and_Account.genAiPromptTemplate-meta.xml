@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<GenAiPromptTemplate xmlns="http://soap.sforce.com/2006/04/metadata">
+    <description>Analyses the Case email address, subject, and description alongside a list of candidate Contacts and Accounts to identify the best-matching Contact and Account for auto-assignment. Returns structured JSON only. KAN-13.</description>
+    <masterLabel>Case Get Matching Contact and Account</masterLabel>
+    <relatedEntity>Case</relatedEntity>
+    <type>einstein_gpt__flex</type>
+    <visibility>Global</visibility>
+    <templateVersions>
+        <content>You are an expert Salesforce service desk assistant. Your task is to identify the best-matching Contact and Account for a support case based on the sender email address and case details.
+
+## Case Information
+Subject: {!$Input:Case.Subject}
+Description: {!$Input:Case.Description}
+Sender Email: {!$Input:Case.SuppliedEmail}
+Origin: {!$Input:Case.Origin}
+
+## Candidate Contacts and Accounts (from sender email lookup)
+{!$Flow:Case_Get_Contact_and_Account_by_Email.contactAccountJson}
+
+## Instructions
+Review the candidate list above and select the single best-matching Contact and Account for this case.
+
+Use the following criteria to select the best match:
+1. Exact email match is the strongest signal — prefer it over name similarity
+2. If multiple Contacts share the same email, prefer the one whose Account most closely matches the case subject or description context
+3. If no candidate is found (the candidate field says "No contact found."), return null for both fields
+
+## Self-Check (verify ALL before responding)
+- [ ] contactId is exactly 18 characters and starts with "003"
+- [ ] accountId is exactly 18 characters and starts with "001"
+- [ ] If no match exists, both fields are null (not empty string, not "N/A")
+- [ ] The response contains ONLY a JSON object — no text before or after
+- [ ] There are no markdown code fences (``` or ```json)
+- [ ] There are no trailing commas or syntax errors
+
+## Required Output Format
+{"contactId":"&lt;18-char-003-prefixed-Id-or-null&gt;","accountId":"&lt;18-char-001-prefixed-Id-or-null&gt;"}
+
+Examples of valid output:
+{"contactId":"0031000000000001AAA","accountId":"0011000000000001AAA"}
+{"contactId":null,"accountId":null}
+</content>
+        <inputs>
+            <apiName>Case</apiName>
+            <definition>SOBJECT://Case</definition>
+            <referenceName>Input:Case</referenceName>
+            <required>true</required>
+        </inputs>
+        <primaryModel>sfdc_ai__DefaultBedrockAnthropicClaude3Sonnet</primaryModel>
+        <status>Published</status>
+        <templateDataProviders>
+            <definition>flow://Case_Get_Contact_and_Account_by_Email</definition>
+            <parameters>
+                <definition>SOBJECT://Case</definition>
+                <isRequired>true</isRequired>
+                <parameterName>inputCase</parameterName>
+                <valueExpression>{!$Input:Case}</valueExpression>
+            </parameters>
+            <referenceName>Flow:Case_Get_Contact_and_Account_by_Email</referenceName>
+        </templateDataProviders>
+    </templateVersions>
+</GenAiPromptTemplate>

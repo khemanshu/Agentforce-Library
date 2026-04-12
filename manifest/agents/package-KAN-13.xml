@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+    Agent: Auto Assign Account and Contact
+    KAN-13
+    Deploy this package to install only the Auto Assign Account and Contact agent components.
+    Note: CaseAgentTriageJsonParser and grounding Flows are already deployed (KAN-12).
+    This package updates the Intelligent_Case_Prioritization flow and adds the new Prompt Template.
+-->
+<Package xmlns="http://soap.sforce.com/2006/04/metadata">
+    <version>66.0</version>
+
+    <types>
+        <n>Flow</n>
+        <members>Intelligent_Case_Prioritization</members>
+    </types>
+
+    <types>
+        <n>GenAiPromptTemplate</n>
+        <members>Case_Get_Matching_Contact_and_Account</members>
+    </types>
+
+</Package>
