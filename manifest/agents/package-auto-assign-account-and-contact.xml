@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+    Agent: Auto Assign Account and Contact
+    KAN-13
+    Deploy this package to install the Auto Assign Account and Contact agent.
+    Includes all components this agent depends on.
+-->
+<Package xmlns="http://soap.sforce.com/2006/04/metadata">
+    <version>66.0</version>
+
+    <types>
+        <members>CaseAgentTriageJsonParser</members>
+        <members>CaseAgentTriageJsonParserTest</members>
+        <name>ApexClass</name>
+    </types>
+
+    <types>
+        <members>Intelligent_Case_Prioritization</members>
+        <members>Case_Get_Contact_and_Account_by_Email</members>
+        <members>Case_Get_related_Tasks_Events</members>
+        <name>Flow</name>
+    </types>
+
+    <types>
+        <members>Case_Get_Matching_Contact_and_Account</members>
+        <name>GenAiPromptTemplate</name>
+    </types>
+
+    <types>
+        <members>ServiceDeskAgentforcePermission</members>
+        <name>PermissionSet</name>
+    </types>
+
+</Package>
