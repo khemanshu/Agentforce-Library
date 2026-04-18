@@ -13,26 +13,26 @@
         <members>CaseAgentTriageJsonParserTest</members>
         <members>CaseProductFamilyPromptAction</members>
         <members>CaseProductFamilyPromptActionTest</members>
-        <n>ApexClass</n>
+        <name>ApexClass</name>
     </types>
     <types>
         <members>Case.ProductFamily__c</members>
-        <n>CustomField</n>
+        <name>CustomField</name>
     </types>
     <types>
         <members>Intelligent_Case_Prioritization</members>
         <members>Case_Get_Contact_and_Account_by_Email</members>
         <members>Case_Get_related_Tasks_Events</members>
-        <n>Flow</n>
+        <name>Flow</name>
     </types>
     <types>
         <members>Intelligent_Case_Prioritization</members>
         <members>Case_Get_Matching_Contact_and_Account</members>
         <members>Agentforce_Case_ProductFamily_Detection</members>
-        <n>GenAiPromptTemplate</n>
+        <name>GenAiPromptTemplate</name>
     </types>
     <types>
         <members>ServiceDeskAgentforcePermission</members>
-        <n>PermissionSet</n>
+        <name>PermissionSet</name>
     </types>
 </Package>
