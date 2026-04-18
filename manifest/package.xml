@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!--
-    Global Package Manifest — Hexaware Agentforce
+    Global Package Manifest - Hexaware Agentforce
     Per-agent packages in manifest/agents/:
       - package-intelligent-case-prioritization.xml  (KAN-12)
       - package-auto-assign-account-and-contact.xml  (KAN-13)
