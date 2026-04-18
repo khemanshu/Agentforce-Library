@@ -1,9 +1,29 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<!-- Agent Package Manifest - AI-Powered ProductFamily__c Population - KAN-14 -->
+<!--
+    Agent Package Manifest - AI-Powered ProductFamily__c Population - KAN-14
+    Post-deploy manual steps:
+      1. Add ProductFamily__c to Case page layout
+      2. Activate Agentforce_Case_ProductFamily_Detection in Prompt Builder
+      3. Verify Einstein Trust Layer ZDR + PII masking enabled
+      4. Data audit: confirm Product2.Family populated on all Product records
+-->
 <Package xmlns="http://soap.sforce.com/2006/04/metadata">
     <version>66.0</version>
-    <types><members>Case.ProductFamily__c</members><n>CustomField</n></types>
-    <types><members>CaseProductFamilyPromptAction</members><members>CaseProductFamilyPromptActionTest</members><n>ApexClass</n></types>
-    <types><members>Agentforce_Case_ProductFamily_Detection</members><n>GenAiPromptTemplate</n></types>
-    <types><members>Intelligent_Case_Prioritization</members><n>Flow</n></types>
+    <types>
+        <members>Case.ProductFamily__c</members>
+        <n>CustomField</n>
+    </types>
+    <types>
+        <members>CaseProductFamilyPromptAction</members>
+        <members>CaseProductFamilyPromptActionTest</members>
+        <n>ApexClass</n>
+    </types>
+    <types>
+        <members>Agentforce_Case_ProductFamily_Detection</members>
+        <n>GenAiPromptTemplate</n>
+    </types>
+    <types>
+        <members>Intelligent_Case_Prioritization</members>
+        <n>Flow</n>
+    </types>
 </Package>
