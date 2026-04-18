@@ -10,21 +10,21 @@
     <environments>Default</environments>
     <areMetricsLoggedToDataCloud>false</areMetricsLoggedToDataCloud>
     <variables>
-        <n>PromptResponseText</n>
+        <name>PromptResponseText</name>
         <dataType>String</dataType>
         <isCollection>false</isCollection>
         <isInput>false</isInput>
         <isOutput>false</isOutput>
     </variables>
     <variables>
-        <n>ContactAccountMatchJson</n>
+        <name>ContactAccountMatchJson</name>
         <dataType>String</dataType>
         <isCollection>false</isCollection>
         <isInput>false</isInput>
         <isOutput>false</isOutput>
     </variables>
     <variables>
-        <n>UpdatedCase</n>
+        <name>UpdatedCase</name>
         <dataType>SObject</dataType>
         <isCollection>false</isCollection>
         <isInput>false</isInput>
@@ -33,14 +33,14 @@
     </variables>
     <!-- KAN-14 -->
     <variables>
-        <n>ProductFamilyPromptResponse</n>
+        <name>ProductFamilyPromptResponse</name>
         <dataType>String</dataType>
         <isCollection>false</isCollection>
         <isInput>false</isInput>
         <isOutput>false</isOutput>
     </variables>
     <variables>
-        <n>UpdatedCaseAfterProductFamily</n>
+        <name>UpdatedCaseAfterProductFamily</name>
         <dataType>SObject</dataType>
         <isCollection>false</isCollection>
         <isInput>false</isInput>
@@ -49,7 +49,7 @@
     </variables>
     <!-- KAN-12 immediate path -->
     <actionCalls>
-        <n>Generate_Case_Priority</n>
+        <name>Generate_Case_Priority</name>
         <label>Generate Case Priority</label>
         <locationX>0</locationX><locationY>0</locationY>
         <actionName>Intelligent_Case_Prioritization</actionName>
@@ -57,13 +57,13 @@
         <connector><targetReference>Parse_Agent_Triage_JSON</targetReference></connector>
         <faultConnector><targetReference>Create_Triage_Failed_Task</targetReference></faultConnector>
         <flowTransactionModel>CurrentTransaction</flowTransactionModel>
-        <inputParameters><n>Input:Case</n><value><elementReference>$Record</elementReference></value></inputParameters>
-        <outputParameters><assignToReference>PromptResponseText</assignToReference><n>promptResponse</n></outputParameters>
+        <inputParameters><name>Input:Case</name><value><elementReference>$Record</elementReference></value></inputParameters>
+        <outputParameters><assignToReference>PromptResponseText</assignToReference><name>promptResponse</name></outputParameters>
         <nameSegment>Intelligent_Case_Prioritization</nameSegment>
         <offset>0</offset>
     </actionCalls>
     <actionCalls>
-        <n>Parse_Agent_Triage_JSON</n>
+        <name>Parse_Agent_Triage_JSON</name>
         <label>Parse Agent Triage JSON</label>
         <locationX>0</locationX><locationY>0</locationY>
         <actionName>CaseAgentTriageJsonParser</actionName>
@@ -71,14 +71,14 @@
         <connector><targetReference>Check_Parse_Success</targetReference></connector>
         <faultConnector><targetReference>Create_Triage_Failed_Task</targetReference></faultConnector>
         <flowTransactionModel>Automatic</flowTransactionModel>
-        <inputParameters><n>json</n><value><elementReference>PromptResponseText</elementReference></value></inputParameters>
+        <inputParameters><name>json</name><value><elementReference>PromptResponseText</elementReference></value></inputParameters>
         <nameSegment>CaseAgentTriageJsonParser</nameSegment>
         <offset>0</offset>
         <storeOutputAutomatically>true</storeOutputAutomatically>
     </actionCalls>
     <!-- KAN-13 scheduled path Step 1 -->
     <actionCalls>
-        <n>Generate_Contact_Account_Match</n>
+        <name>Generate_Contact_Account_Match</name>
         <label>Generate Contact Account Match</label>
         <locationX>0</locationX><locationY>0</locationY>
         <actionName>Case_Get_Matching_Contact_and_Account</actionName>
@@ -86,13 +86,13 @@
         <connector><targetReference>Parse_Contact_Account_JSON</targetReference></connector>
         <faultConnector><targetReference>Create_Auto_Assign_Failed_Task</targetReference></faultConnector>
         <flowTransactionModel>CurrentTransaction</flowTransactionModel>
-        <inputParameters><n>Input:Case</n><value><elementReference>$Record</elementReference></value></inputParameters>
-        <outputParameters><assignToReference>ContactAccountMatchJson</assignToReference><n>promptResponse</n></outputParameters>
+        <inputParameters><name>Input:Case</name><value><elementReference>$Record</elementReference></value></inputParameters>
+        <outputParameters><assignToReference>ContactAccountMatchJson</assignToReference><name>promptResponse</name></outputParameters>
         <nameSegment>Case_Get_Matching_Contact_and_Account</nameSegment>
         <offset>0</offset>
     </actionCalls>
     <actionCalls>
-        <n>Parse_Contact_Account_JSON</n>
+        <name>Parse_Contact_Account_JSON</name>
         <label>Parse Contact Account JSON</label>
         <locationX>0</locationX><locationY>0</locationY>
         <actionName>CaseAgentTriageJsonParser</actionName>
@@ -100,14 +100,14 @@
         <connector><targetReference>Check_Auto_Assign_Success</targetReference></connector>
         <faultConnector><targetReference>Create_Auto_Assign_Failed_Task</targetReference></faultConnector>
         <flowTransactionModel>Automatic</flowTransactionModel>
-        <inputParameters><n>json</n><value><elementReference>ContactAccountMatchJson</elementReference></value></inputParameters>
+        <inputParameters><name>json</name><value><elementReference>ContactAccountMatchJson</elementReference></value></inputParameters>
         <nameSegment>CaseAgentTriageJsonParser</nameSegment>
         <offset>0</offset>
         <storeOutputAutomatically>true</storeOutputAutomatically>
     </actionCalls>
     <!-- KAN-14 scheduled path Step 2 — Mode A: fetch data -->
     <actionCalls>
-        <n>Detect_Product_Family</n>
+        <name>Detect_Product_Family</name>
         <label>Detect Product Family</label>
         <locationX>0</locationX><locationY>0</locationY>
         <actionName>CaseProductFamilyPromptAction</actionName>
@@ -115,15 +115,15 @@
         <connector><targetReference>Generate_ProductFamily_Prompt</targetReference></connector>
         <faultConnector><targetReference>Create_ProductFamily_Failed_Task</targetReference></faultConnector>
         <flowTransactionModel>Automatic</flowTransactionModel>
-        <inputParameters><n>caseId</n><value><elementReference>$Record.Id</elementReference></value></inputParameters>
-        <inputParameters><n>accountId</n><value><elementReference>UpdatedCase.AccountId</elementReference></value></inputParameters>
+        <inputParameters><name>caseId</name><value><elementReference>$Record.Id</elementReference></value></inputParameters>
+        <inputParameters><name>accountId</name><value><elementReference>UpdatedCase.AccountId</elementReference></value></inputParameters>
         <nameSegment>CaseProductFamilyPromptAction</nameSegment>
         <offset>0</offset>
         <storeOutputAutomatically>true</storeOutputAutomatically>
     </actionCalls>
     <!-- KAN-14 scheduled path Step 2a — call Flex Prompt -->
     <actionCalls>
-        <n>Generate_ProductFamily_Prompt</n>
+        <name>Generate_ProductFamily_Prompt</name>
         <label>Generate Product Family Prompt</label>
         <locationX>0</locationX><locationY>0</locationY>
         <actionName>Agentforce_Case_ProductFamily_Detection</actionName>
@@ -131,17 +131,17 @@
         <connector><targetReference>Parse_ProductFamily_JSON</targetReference></connector>
         <faultConnector><targetReference>Create_ProductFamily_Failed_Task</targetReference></faultConnector>
         <flowTransactionModel>CurrentTransaction</flowTransactionModel>
-        <inputParameters><n>Input:assetsJson</n><value><elementReference>Detect_Product_Family.assetsJson</elementReference></value></inputParameters>
-        <inputParameters><n>Input:caseSubject</n><value><elementReference>Detect_Product_Family.caseSubject</elementReference></value></inputParameters>
-        <inputParameters><n>Input:caseDescription</n><value><elementReference>Detect_Product_Family.caseDescription</elementReference></value></inputParameters>
-        <inputParameters><n>Input:caseEmailBody</n><value><elementReference>Detect_Product_Family.caseEmailBody</elementReference></value></inputParameters>
-        <outputParameters><assignToReference>ProductFamilyPromptResponse</assignToReference><n>promptResponse</n></outputParameters>
+        <inputParameters><name>Input:assetsJson</name><value><elementReference>Detect_Product_Family.assetsJson</elementReference></value></inputParameters>
+        <inputParameters><name>Input:caseSubject</name><value><elementReference>Detect_Product_Family.caseSubject</elementReference></value></inputParameters>
+        <inputParameters><name>Input:caseDescription</name><value><elementReference>Detect_Product_Family.caseDescription</elementReference></value></inputParameters>
+        <inputParameters><name>Input:caseEmailBody</name><value><elementReference>Detect_Product_Family.caseEmailBody</elementReference></value></inputParameters>
+        <outputParameters><assignToReference>ProductFamilyPromptResponse</assignToReference><name>promptResponse</name></outputParameters>
         <nameSegment>Agentforce_Case_ProductFamily_Detection</nameSegment>
         <offset>0</offset>
     </actionCalls>
     <!-- KAN-14 scheduled path Step 2b — Mode B: parse response -->
     <actionCalls>
-        <n>Parse_ProductFamily_JSON</n>
+        <name>Parse_ProductFamily_JSON</name>
         <label>Parse Product Family JSON</label>
         <locationX>0</locationX><locationY>0</locationY>
         <actionName>CaseProductFamilyPromptAction</actionName>
@@ -149,18 +149,18 @@
         <connector><targetReference>Check_ProductFamily_Success</targetReference></connector>
         <faultConnector><targetReference>Create_ProductFamily_Failed_Task</targetReference></faultConnector>
         <flowTransactionModel>Automatic</flowTransactionModel>
-        <inputParameters><n>promptResponse</n><value><elementReference>ProductFamilyPromptResponse</elementReference></value></inputParameters>
+        <inputParameters><name>promptResponse</name><value><elementReference>ProductFamilyPromptResponse</elementReference></value></inputParameters>
         <nameSegment>CaseProductFamilyPromptAction</nameSegment>
         <offset>1</offset>
         <storeOutputAutomatically>true</storeOutputAutomatically>
     </actionCalls>
     <decisions>
-        <n>Check_Case_Description</n>
+        <name>Check_Case_Description</name>
         <label>Check Case Description</label>
         <locationX>0</locationX><locationY>0</locationY>
         <defaultConnectorLabel>No Description</defaultConnectorLabel>
         <rules>
-            <n>Description_Exists</n>
+            <name>Description_Exists</name>
             <conditionLogic>and</conditionLogic>
             <conditions><leftValueReference>$Record.Description</leftValueReference><operator>IsNull</operator><rightValue><booleanValue>false</booleanValue></rightValue></conditions>
             <connector><targetReference>Generate_Case_Priority</targetReference></connector>
@@ -168,13 +168,13 @@
         </rules>
     </decisions>
     <decisions>
-        <n>Check_Parse_Success</n>
+        <name>Check_Parse_Success</name>
         <label>Check If Parsing is Success</label>
         <locationX>0</locationX><locationY>0</locationY>
         <defaultConnectorLabel>Failure</defaultConnectorLabel>
         <defaultConnector><targetReference>Create_Triage_Failed_Task</targetReference></defaultConnector>
         <rules>
-            <n>Is_Success</n>
+            <name>Is_Success</name>
             <conditionLogic>and</conditionLogic>
             <conditions><leftValueReference>Parse_Agent_Triage_JSON.isSuccess</leftValueReference><operator>EqualTo</operator><rightValue><booleanValue>true</booleanValue></rightValue></conditions>
             <connector><targetReference>Update_Case_Priority</targetReference></connector>
@@ -182,13 +182,13 @@
         </rules>
     </decisions>
     <decisions>
-        <n>Check_Auto_Assign_Success</n>
+        <name>Check_Auto_Assign_Success</name>
         <label>Check If Auto Assign Succeeded</label>
         <locationX>0</locationX><locationY>0</locationY>
         <defaultConnectorLabel>Failure or No Match</defaultConnectorLabel>
         <defaultConnector><targetReference>Create_Auto_Assign_Failed_Task</targetReference></defaultConnector>
         <rules>
-            <n>Auto_Assign_Success</n>
+            <name>Auto_Assign_Success</name>
             <conditionLogic>and</conditionLogic>
             <conditions><leftValueReference>Parse_Contact_Account_JSON.isSuccess</leftValueReference><operator>EqualTo</operator><rightValue><booleanValue>true</booleanValue></rightValue></conditions>
             <connector><targetReference>Assign_Contact_and_Account</targetReference></connector>
@@ -197,13 +197,13 @@
     </decisions>
     <!-- KAN-14 -->
     <decisions>
-        <n>Check_ProductFamily_Success</n>
+        <name>Check_ProductFamily_Success</name>
         <label>Check Product Family Success</label>
         <locationX>0</locationX><locationY>0</locationY>
         <defaultConnectorLabel>Failure or No Match</defaultConnectorLabel>
         <defaultConnector><targetReference>Create_ProductFamily_Failed_Task</targetReference></defaultConnector>
         <rules>
-            <n>ProductFamily_Success</n>
+            <name>ProductFamily_Success</name>
             <conditionLogic>and</conditionLogic>
             <conditions><leftValueReference>Parse_ProductFamily_JSON.isSuccess</leftValueReference><operator>EqualTo</operator><rightValue><booleanValue>true</booleanValue></rightValue></conditions>
             <connector><targetReference>Update_Case_ProductFamily</targetReference></connector>
@@ -211,7 +211,7 @@
         </rules>
     </decisions>
     <recordCreates>
-        <n>Create_Triage_Failed_Task</n>
+        <name>Create_Triage_Failed_Task</name>
         <label>Create AI Triage Failed Task</label>
         <locationX>0</locationX><locationY>0</locationY>
         <inputAssignments><field>Subject</field><value><stringValue>AI Triage Failed — Manual Review Required</stringValue></value></inputAssignments>
@@ -221,7 +221,7 @@
         <object>Task</object>
     </recordCreates>
     <recordCreates>
-        <n>Create_Auto_Assign_Failed_Task</n>
+        <name>Create_Auto_Assign_Failed_Task</name>
         <label>Create AI Auto-Assign Failed Task</label>
         <locationX>0</locationX><locationY>0</locationY>
         <inputAssignments><field>Subject</field><value><stringValue>AI Auto-Assign Failed — Manual Review Required</stringValue></value></inputAssignments>
@@ -233,7 +233,7 @@
     </recordCreates>
     <!-- KAN-14 fault task -->
     <recordCreates>
-        <n>Create_ProductFamily_Failed_Task</n>
+        <name>Create_ProductFamily_Failed_Task</name>
         <label>Create Product Family Detection Failed Task</label>
         <locationX>0</locationX><locationY>0</locationY>
         <inputAssignments><field>Subject</field><value><stringValue>Product Family Detection Failed — Manual Review Required</stringValue></value></inputAssignments>
@@ -244,7 +244,7 @@
         <connector><targetReference>Get_Updated_Case_After_ProductFamily</targetReference></connector>
     </recordCreates>
     <recordUpdates>
-        <n>Update_Case_Priority</n>
+        <name>Update_Case_Priority</name>
         <label>Update Case Priority, Reason and Type</label>
         <locationX>0</locationX><locationY>0</locationY>
         <inputAssignments><field>Priority</field><value><elementReference>Parse_Agent_Triage_JSON.priority</elementReference></value></inputAssignments>
@@ -253,7 +253,7 @@
         <inputReference>$Record</inputReference>
     </recordUpdates>
     <recordUpdates>
-        <n>Assign_Contact_and_Account</n>
+        <name>Assign_Contact_and_Account</name>
         <label>Assign Contact and Account to Case</label>
         <locationX>0</locationX><locationY>0</locationY>
         <inputAssignments><field>ContactId</field><value><elementReference>Parse_Contact_Account_JSON.contactId</elementReference></value></inputAssignments>
@@ -263,7 +263,7 @@
     </recordUpdates>
     <!-- KAN-14 -->
     <recordUpdates>
-        <n>Update_Case_ProductFamily</n>
+        <name>Update_Case_ProductFamily</name>
         <label>Update Case Product Family</label>
         <locationX>0</locationX><locationY>0</locationY>
         <inputAssignments><field>ProductFamily__c</field><value><elementReference>Parse_ProductFamily_JSON.productFamily</elementReference></value></inputAssignments>
@@ -271,7 +271,7 @@
         <inputReference>$Record</inputReference>
     </recordUpdates>
     <recordLookups>
-        <n>Get_Updated_Case_After_Assign</n>
+        <name>Get_Updated_Case_After_Assign</name>
         <label>Get Updated Case After Assign</label>
         <locationX>0</locationX><locationY>0</locationY>
         <assignNullValuesIfNoRecordsFound>false</assignNullValuesIfNoRecordsFound>
@@ -292,7 +292,7 @@
     </recordLookups>
     <!-- KAN-14 -->
     <recordLookups>
-        <n>Get_Updated_Case_After_ProductFamily</n>
+        <name>Get_Updated_Case_After_ProductFamily</name>
         <label>Get Updated Case After Product Family</label>
         <locationX>0</locationX><locationY>0</locationY>
         <assignNullValuesIfNoRecordsFound>false</assignNullValuesIfNoRecordsFound>
@@ -319,7 +319,7 @@
         <object>Case</object>
         <recordTriggerType>Create</recordTriggerType>
         <scheduledPaths>
-            <n>Send_Acknowledge_Email_to_Customer</n>
+            <name>Send_Acknowledge_Email_to_Customer</name>
             <label>Auto Assign Account and Contact (KAN-13)</label>
             <connector><targetReference>Generate_Contact_Account_Match</targetReference></connector>
             <offsetNumber>1</offsetNumber>

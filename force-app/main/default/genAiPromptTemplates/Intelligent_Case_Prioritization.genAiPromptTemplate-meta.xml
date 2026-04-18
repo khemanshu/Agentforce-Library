@@ -1,10 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <GenAiPromptTemplate xmlns="http://soap.sforce.com/2006/04/metadata">
+    <activeVersionIdentifier>/a34JEZAyljaWn1AhQdwqs3BKjJGZiqadtqMQoC77Go=_3</activeVersionIdentifier>
     <description>Analyses the Case Subject, Description, and linked Contact/Account context to assign Priority, Reason, and Type. Returns structured JSON only. KAN-12.</description>
+    <developerName>Intelligent_Case_Prioritization</developerName>
     <masterLabel>Intelligent Case Prioritization</masterLabel>
+    <overridable>false</overridable>
     <relatedEntity>Case</relatedEntity>
-    <type>einstein_gpt__flex</type>
-    <visibility>Global</visibility>
     <templateVersions>
         <content>You are an expert service desk triage assistant. Analyse the support case below and return ONLY a valid JSON object — no markdown, no explanation, no text outside the JSON.
 
@@ -29,7 +30,7 @@ Based on the information above, determine:
 ## Allowed values (you MUST use exactly one of these — no other values are accepted)
 
 priority: Low | Medium | High | Critical
-reason: User didn't attend training | Complex functionality | Existing problem | Instructions not clear | New problem
+reason: User didn&apos;t attend training | Complex functionality | Existing problem | Instructions not clear | New problem
 type: Product Support | Account Support | General | Technical Issue
 
 ## Self-Check (verify ALL before responding)
@@ -41,7 +42,7 @@ type: Product Support | Account Support | General | Technical Issue
 - [ ] There are no trailing commas or syntax errors in the JSON
 
 ## Required Output Format
-{"priority":"&lt;value&gt;","reason":"&lt;value&gt;","type":"&lt;value&gt;"}
+{&quot;priority&quot;:&quot;&lt;value&gt;&quot;,&quot;reason&quot;:&quot;&lt;value&gt;&quot;,&quot;type&quot;:&quot;&lt;value&gt;&quot;}
 </content>
         <inputs>
             <apiName>Case</apiName>
@@ -49,7 +50,6 @@ type: Product Support | Account Support | General | Technical Issue
             <referenceName>Input:Case</referenceName>
             <required>true</required>
         </inputs>
-        <primaryModel>sfdc_ai__DefaultBedrockAnthropicClaude3Sonnet</primaryModel>
         <status>Published</status>
         <templateDataProviders>
             <definition>flow://Case_Get_Contact_and_Account_by_Email</definition>
@@ -71,5 +71,8 @@ type: Product Support | Account Support | General | Technical Issue
             </parameters>
             <referenceName>Flow:Case_Get_related_Tasks_Events</referenceName>
         </templateDataProviders>
+        <versionIdentifier>/a34JEZAyljaWn1AhQdwqs3BKjJGZiqadtqMQoC77Go=_3</versionIdentifier>
     </templateVersions>
+    <type>einstein_gpt__flex</type>
+    <visibility>Global</visibility>
 </GenAiPromptTemplate>

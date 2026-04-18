@@ -1,10 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <GenAiPromptTemplate xmlns="http://soap.sforce.com/2006/04/metadata">
+    <activeVersionIdentifier>/a34JEZAyljaWn1AhQdwqs3BKjJGZiqadtqMQoC77Go=_2</activeVersionIdentifier>
     <description>Analyses the Case email address, subject, and description alongside a list of candidate Contacts and Accounts to identify the best-matching Contact and Account for auto-assignment. Returns structured JSON only. KAN-13.</description>
+    <developerName>Case_Get_Matching_Contact_and_Account</developerName>
     <masterLabel>Case Get Matching Contact and Account</masterLabel>
+    <overridable>false</overridable>
     <relatedEntity>Case</relatedEntity>
-    <type>einstein_gpt__flex</type>
-    <visibility>Global</visibility>
     <templateVersions>
         <content>You are an expert Salesforce service desk assistant. Your task is to identify the best-matching Contact and Account for a support case based on the sender email address and case details.
 
@@ -23,22 +24,22 @@ Review the candidate list above and select the single best-matching Contact and 
 Use the following criteria to select the best match:
 1. Exact email match is the strongest signal — prefer it over name similarity
 2. If multiple Contacts share the same email, prefer the one whose Account most closely matches the case subject or description context
-3. If no candidate is found (the candidate field says "No contact found."), return null for both fields
+3. If no candidate is found (the candidate field says &quot;No contact found.&quot;), return null for both fields
 
 ## Self-Check (verify ALL before responding)
-- [ ] contactId is exactly 18 characters and starts with "003"
-- [ ] accountId is exactly 18 characters and starts with "001"
-- [ ] If no match exists, both fields are null (not empty string, not "N/A")
+- [ ] contactId is exactly 18 characters and starts with &quot;003&quot;
+- [ ] accountId is exactly 18 characters and starts with &quot;001&quot;
+- [ ] If no match exists, both fields are null (not empty string, not &quot;N/A&quot;)
 - [ ] The response contains ONLY a JSON object — no text before or after
 - [ ] There are no markdown code fences (``` or ```json)
 - [ ] There are no trailing commas or syntax errors
 
 ## Required Output Format
-{"contactId":"&lt;18-char-003-prefixed-Id-or-null&gt;","accountId":"&lt;18-char-001-prefixed-Id-or-null&gt;"}
+{&quot;contactId&quot;:&quot;&lt;18-char-003-prefixed-Id-or-null&gt;&quot;,&quot;accountId&quot;:&quot;&lt;18-char-001-prefixed-Id-or-null&gt;&quot;}
 
 Examples of valid output:
-{"contactId":"0031000000000001AAA","accountId":"0011000000000001AAA"}
-{"contactId":null,"accountId":null}
+{&quot;contactId&quot;:&quot;0031000000000001AAA&quot;,&quot;accountId&quot;:&quot;0011000000000001AAA&quot;}
+{&quot;contactId&quot;:null,&quot;accountId&quot;:null}
 </content>
         <inputs>
             <apiName>Case</apiName>
@@ -46,7 +47,6 @@ Examples of valid output:
             <referenceName>Input:Case</referenceName>
             <required>true</required>
         </inputs>
-        <primaryModel>sfdc_ai__DefaultBedrockAnthropicClaude3Sonnet</primaryModel>
         <status>Published</status>
         <templateDataProviders>
             <definition>flow://Case_Get_Contact_and_Account_by_Email</definition>
@@ -58,5 +58,8 @@ Examples of valid output:
             </parameters>
             <referenceName>Flow:Case_Get_Contact_and_Account_by_Email</referenceName>
         </templateDataProviders>
+        <versionIdentifier>/a34JEZAyljaWn1AhQdwqs3BKjJGZiqadtqMQoC77Go=_2</versionIdentifier>
     </templateVersions>
+    <type>einstein_gpt__flex</type>
+    <visibility>Global</visibility>
 </GenAiPromptTemplate>
