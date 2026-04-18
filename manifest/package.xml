@@ -35,4 +35,8 @@
         <members>ServiceDeskAgentforcePermission</members>
         <name>PermissionSet</name>
     </types>
+    <types>
+        <members>Case-Case Layout</members>
+        <name>Layout</name>
+    </types>
 </Package>
