@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+    Agent Package Manifest - AI-Powered ProductFamily__c Population - KAN-14
+    Post-deploy manual steps:
+      1. Activate Agentforce_Case_ProductFamily_Detection in Prompt Builder
+      2. Verify Einstein Trust Layer ZDR + PII masking enabled
+      3. Data audit: confirm Product2.Family populated on all Product records
+-->
+<Package xmlns="http://soap.sforce.com/2006/04/metadata">
+    <version>66.0</version>
+    <types>
+        <members>Case.ProductFamily__c</members>
+        <name>CustomField</name>
+    </types>
+    <types>
+        <members>CaseProductFamilyPromptAction</members>
+        <members>CaseProductFamilyPromptActionTest</members>
+        <name>ApexClass</name>
+    </types>
+    <types>
+        <members>Agentforce_Case_ProductFamily_Detection</members>
+        <name>GenAiPromptTemplate</name>
+    </types>
+    <types>
+        <members>Intelligent_Case_Prioritization</members>
+        <name>Flow</name>
+    </types>
+    <types>
+        <members>Case-Case Layout</members>
+        <name>Layout</name>
+    </types>
+</Package>
