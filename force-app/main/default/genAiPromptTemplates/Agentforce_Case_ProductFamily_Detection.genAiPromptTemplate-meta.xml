@@ -1,9 +1,10 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <GenAiPromptTemplate xmlns="http://soap.sforce.com/2006/04/metadata">
-    <description>Semantically matches a Case against the Account's installed Assets to detect the most likely Product Family. Returns structured JSON only. KAN-14.</description>
+    <activeVersionIdentifier>/a34JEZAyljaWn1AhQdwqs3BKjJGZiqadtqMQoC77Go=_3</activeVersionIdentifier>
+    <description>Semantically matches a Case against the Account&apos;s installed Assets to detect the most likely Product Family. Returns structured JSON only. KAN-14.</description>
+    <developerName>Agentforce_Case_ProductFamily_Detection</developerName>
     <masterLabel>Agentforce Case Product Family Detection</masterLabel>
-    <type>einstein_gpt__flex</type>
-    <visibility>Global</visibility>
+    <overridable>false</overridable>
     <templateVersions>
         <content>You are an expert product classification assistant for a telecom service desk. Your task is to determine which Product Family best matches the support case described below, using ONLY the installed assets provided.
 
@@ -19,19 +20,45 @@ Latest Email from Customer: {!$Input:caseEmailBody}
 1. Read the Case Subject, Description, and Email carefully.
 2. Compare the case context against the installed assets listed in the JSON above.
 3. Identify the single Product Family from the assets list that best matches the issue described.
-4. If no asset matches, return an empty string for matched_product_family and set confidence to "none".
+4. If no asset matches, return an empty string for matched_product_family and set confidence to &quot;none&quot;.
 5. NEVER invent or guess a product family that does not appear in the assetsJson list.
 
 ## Allowed confidence values: high | medium | low | none
 
 ## Required Output Format
-{"matched_product_family":"value or empty","matched_asset_name":"value or empty","confidence":"high|medium|low|none","match_reason":"one sentence"}
+{&quot;matched_product_family&quot;:&quot;value or empty&quot;,&quot;matched_asset_name&quot;:&quot;value or empty&quot;,&quot;confidence&quot;:&quot;high|medium|low|none&quot;,&quot;match_reason&quot;:&quot;one sentence&quot;}
 </content>
-        <inputs><apiName>assetsJson</apiName><definition>primitive://String</definition><masterLabel>Assets JSON</masterLabel><referenceName>Input:assetsJson</referenceName><required>true</required></inputs>
-        <inputs><apiName>caseSubject</apiName><definition>primitive://String</definition><masterLabel>Case Subject</masterLabel><referenceName>Input:caseSubject</referenceName><required>true</required></inputs>
-        <inputs><apiName>caseDescription</apiName><definition>primitive://String</definition><masterLabel>Case Description</masterLabel><referenceName>Input:caseDescription</referenceName><required>false</required></inputs>
-        <inputs><apiName>caseEmailBody</apiName><definition>primitive://String</definition><masterLabel>Case Email Body</masterLabel><referenceName>Input:caseEmailBody</referenceName><required>false</required></inputs>
-        <primaryModel>sfdc_ai__DefaultBedrockAnthropicClaude3Sonnet</primaryModel>
+        <inputs>
+            <apiName>assetsJson</apiName>
+            <definition>primitive://String</definition>
+            <masterLabel>Assets JSON</masterLabel>
+            <referenceName>Input:assetsJson</referenceName>
+            <required>true</required>
+        </inputs>
+        <inputs>
+            <apiName>caseSubject</apiName>
+            <definition>primitive://String</definition>
+            <masterLabel>Case Subject</masterLabel>
+            <referenceName>Input:caseSubject</referenceName>
+            <required>true</required>
+        </inputs>
+        <inputs>
+            <apiName>caseDescription</apiName>
+            <definition>primitive://String</definition>
+            <masterLabel>Case Description</masterLabel>
+            <referenceName>Input:caseDescription</referenceName>
+            <required>false</required>
+        </inputs>
+        <inputs>
+            <apiName>caseEmailBody</apiName>
+            <definition>primitive://String</definition>
+            <masterLabel>Case Email Body</masterLabel>
+            <referenceName>Input:caseEmailBody</referenceName>
+            <required>false</required>
+        </inputs>
         <status>Published</status>
+        <versionIdentifier>/a34JEZAyljaWn1AhQdwqs3BKjJGZiqadtqMQoC77Go=_3</versionIdentifier>
     </templateVersions>
+    <type>einstein_gpt__flex</type>
+    <visibility>Global</visibility>
 </GenAiPromptTemplate>

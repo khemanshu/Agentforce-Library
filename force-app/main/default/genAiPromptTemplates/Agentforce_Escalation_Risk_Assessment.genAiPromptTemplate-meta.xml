@@ -1,0 +1,65 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<GenAiPromptTemplate xmlns="http://soap.sforce.com/2006/04/metadata">
+    <description>Analyses a Case inbound emails, SLA milestone data, and core case fields to produce a structured escalation risk score, level, detected signals, and recommended action. Returns structured JSON only. KAN-19.</description>
+    <masterLabel>Agentforce Escalation Risk Assessment</masterLabel>
+    <type>einstein_gpt__flex</type>
+    <visibility>Global</visibility>
+    <templateVersions>
+        <content>You are an expert escalation risk analyst for a telecom service desk. Your task is to assess the escalation risk for the support case below and return a structured JSON response ONLY - no explanations, no prose, no markdown.
+
+## Case Details
+Subject: {!$Input:Case.Subject}
+Description: {!$Input:Case.Description}
+Status: {!$Input:Case.Status}
+Priority: {!$Input:Case.Priority}
+Type: {!$Input:Case.Type}
+Origin: {!$Input:Case.Origin}
+
+## Recent Inbound Emails (last 10, newest first)
+{!$Input:emailsJson}
+
+## SLA Milestone Status
+{!$Input:milestonesJson}
+
+## Instructions
+1. Analyse the case details, email content and tone, and SLA milestone compliance.
+2. Identify specific escalation risk signals (e.g. unanswered emails, violated milestones, hostile language, repeated contacts, churn indicators).
+3. Assign an escalation_risk_score as an integer from 0 (no risk) to 100 (imminent escalation/churn).
+4. Assign an escalation_risk_level using ONLY one of these exact values: Low, Medium, High, Critical.
+5. Summarise the detected signals in escalation_risk_signals (one or two sentences).
+6. Provide a concrete escalation_recommended_action for the service agent to take.
+
+## Scoring guidance
+- 0 to 25: Low - routine case, no concerning signals
+- 26 to 50: Medium - some friction or SLA risk, monitor closely
+- 51 to 75: High - clear escalation signals, proactive intervention needed
+- 76 to 100: Critical - imminent escalation, churn risk, immediate action required
+
+## Required Output Format - return this JSON object and nothing else
+{"escalation_risk_score": 0, "escalation_risk_level": "Low", "escalation_risk_signals": "summary of detected signals", "escalation_recommended_action": "specific action for the agent"}
+</content>
+        <inputs>
+            <apiName>Case</apiName>
+            <definition>sobject://Case</definition>
+            <masterLabel>Case</masterLabel>
+            <referenceName>Input:Case</referenceName>
+            <required>true</required>
+        </inputs>
+        <inputs>
+            <apiName>emailsJson</apiName>
+            <definition>primitive://String</definition>
+            <masterLabel>Emails JSON</masterLabel>
+            <referenceName>Input:emailsJson</referenceName>
+            <required>true</required>
+        </inputs>
+        <inputs>
+            <apiName>milestonesJson</apiName>
+            <definition>primitive://String</definition>
+            <masterLabel>Milestones JSON</masterLabel>
+            <referenceName>Input:milestonesJson</referenceName>
+            <required>false</required>
+        </inputs>
+        <primaryModel>sfdc_ai__DefaultBedrockAnthropicClaude3Sonnet</primaryModel>
+        <status>Published</status>
+    </templateVersions>
+</GenAiPromptTemplate>
