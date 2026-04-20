@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>Escalation_Recommended_Action__c</fullName>
+    <label>Escalation Recommended Action</label>
+    <type>LongTextArea</type>
+    <length>32768</length>
+    <visibleLines>4</visibleLines>
+    <externalId>false</externalId>
+    <description>AI-generated recommended action for the service agent. Populated by Agentforce_Escalation_Risk_Assessment. KAN-19.</description>
+</CustomField>

@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>Last_Risk_Assessment__c</fullName>
+    <label>Last Risk Assessment</label>
+    <type>DateTime</type>
+    <externalId>false</externalId>
+    <description>Timestamp of the last Agentforce Escalation Risk Assessment run on this Case. KAN-19.</description>
+</CustomField>
