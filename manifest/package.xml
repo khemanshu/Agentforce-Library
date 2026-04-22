@@ -18,7 +18,7 @@
         <members>CaseEmailsPromptActionTest</members>
         <members>EscalationRiskFromPromptAction</members>
         <members>EscalationRiskFromPromptActionTest</members>
-        <n>ApexClass</n>
+        <name>ApexClass</name>
     </types>
     <types>
         <members>Case.ProductFamily__c</members>
@@ -27,7 +27,7 @@
         <members>Case.Escalation_Risk_Signals__c</members>
         <members>Case.Escalation_Recommended_Action__c</members>
         <members>Case.Last_Risk_Assessment__c</members>
-        <n>CustomField</n>
+        <name>CustomField</name>
     </types>
     <types>
         <members>Intelligent_Case_Prioritization</members>
@@ -35,21 +35,21 @@
         <members>Case_Get_related_Tasks_Events</members>
         <members>EmailMessage_InboundOnCase_EscalationRisk</members>
         <members>CaseMilestone_EscalationRisk</members>
-        <n>Flow</n>
+        <name>Flow</name>
     </types>
     <types>
         <members>Intelligent_Case_Prioritization</members>
         <members>Case_Get_Matching_Contact_and_Account</members>
         <members>Agentforce_Case_ProductFamily_Detection</members>
         <members>Agentforce_Escalation_Risk_Assessment</members>
-        <n>GenAiPromptTemplate</n>
+        <name>GenAiPromptTemplate</name>
     </types>
     <types>
         <members>ServiceDeskAgentforcePermission</members>
-        <n>PermissionSet</n>
+        <name>PermissionSet</name>
     </types>
     <types>
         <members>Case-Case Layout</members>
-        <n>Layout</n>
+        <name>Layout</name>
     </types>
 </Package>
