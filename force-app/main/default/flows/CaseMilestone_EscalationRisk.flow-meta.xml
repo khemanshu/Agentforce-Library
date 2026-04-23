@@ -1,0 +1,157 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Flow xmlns="http://soap.sforce.com/2006/04/metadata">
+    <apiVersion>66.0</apiVersion>
+    <description>Escalation Risk Assessment Path 2: AutoLaunched flow invoked from Entitlement Milestone Warning/Violation actions. Accepts vCaseId input. KAN-19.</description>
+    <label>CaseMilestone EscalationRisk</label>
+    <interviewLabel>CaseMilestone EscalationRisk {!$Flow.CurrentDateTime}</interviewLabel>
+    <processType>AutoLaunchedFlow</processType>
+    <runInMode>SystemModeWithoutSharing</runInMode>
+    <status>Active</status>
+    <environments>Default</environments>
+    <areMetricsLoggedToDataCloud>false</areMetricsLoggedToDataCloud>
+
+    <actionCalls>
+        <name>Fetch_Emails_And_Milestones</name>
+        <label>Fetch Emails and Milestones</label>
+        <locationX>0</locationX><locationY>0</locationY>
+        <actionName>CaseEmailsPromptAction</actionName>
+        <actionType>apex</actionType>
+        <connector><targetReference>Get_Case_For_Prompt</targetReference></connector>
+        <faultConnector><targetReference>Create_Escalation_Risk_Failed_Task</targetReference></faultConnector>
+        <flowTransactionModel>Automatic</flowTransactionModel>
+        <inputParameters>
+            <name>caseId</name>
+            <value><elementReference>vCaseId</elementReference></value>
+        </inputParameters>
+        <nameSegment>CaseEmailsPromptAction</nameSegment>
+        <offset>0</offset>
+        <storeOutputAutomatically>true</storeOutputAutomatically>
+    </actionCalls>
+
+    <actionCalls>
+        <name>Generate_Escalation_Risk_Prompt</name>
+        <label>Generate Escalation Risk Prompt</label>
+        <locationX>0</locationX><locationY>0</locationY>
+        <actionName>Agentforce_Escalation_Risk_Assessment</actionName>
+        <actionType>generatePromptResponse</actionType>
+        <connector><targetReference>Write_Escalation_Risk_Fields</targetReference></connector>
+        <faultConnector><targetReference>Create_Escalation_Risk_Failed_Task</targetReference></faultConnector>
+        <flowTransactionModel>CurrentTransaction</flowTransactionModel>
+        <inputParameters>
+            <name>Input:Case</name>
+            <value><elementReference>vCase</elementReference></value>
+        </inputParameters>
+        <inputParameters>
+            <name>Input:emailsJson</name>
+            <value><elementReference>Fetch_Emails_And_Milestones.emailsJson</elementReference></value>
+        </inputParameters>
+        <inputParameters>
+            <name>Input:milestonesJson</name>
+            <value><elementReference>Fetch_Emails_And_Milestones.milestonesJson</elementReference></value>
+        </inputParameters>
+        <outputParameters>
+            <assignToReference>vPromptResponseJson</assignToReference>
+            <name>promptResponse</name>
+        </outputParameters>
+        <nameSegment>Agentforce_Escalation_Risk_Assessment</nameSegment>
+        <offset>0</offset>
+    </actionCalls>
+
+    <actionCalls>
+        <name>Write_Escalation_Risk_Fields</name>
+        <label>Write Escalation Risk Fields</label>
+        <locationX>0</locationX><locationY>0</locationY>
+        <actionName>EscalationRiskFromPromptAction</actionName>
+        <actionType>apex</actionType>
+        <faultConnector><targetReference>Create_Escalation_Risk_Failed_Task</targetReference></faultConnector>
+        <flowTransactionModel>Automatic</flowTransactionModel>
+        <inputParameters>
+            <name>caseId</name>
+            <value><elementReference>vCaseId</elementReference></value>
+        </inputParameters>
+        <inputParameters>
+            <name>promptResponseJson</name>
+            <value><elementReference>vPromptResponseJson</elementReference></value>
+        </inputParameters>
+        <nameSegment>EscalationRiskFromPromptAction</nameSegment>
+        <offset>0</offset>
+        <storeOutputAutomatically>true</storeOutputAutomatically>
+    </actionCalls>
+
+    <recordLookups>
+        <name>Get_Case_For_Prompt</name>
+        <label>Get Case For Prompt</label>
+        <locationX>0</locationX><locationY>0</locationY>
+        <assignNullValuesIfNoRecordsFound>false</assignNullValuesIfNoRecordsFound>
+        <connector><targetReference>Generate_Escalation_Risk_Prompt</targetReference></connector>
+        <faultConnector><targetReference>Create_Escalation_Risk_Failed_Task</targetReference></faultConnector>
+        <filterLogic>and</filterLogic>
+        <filters>
+            <field>Id</field>
+            <operator>EqualTo</operator>
+            <value><elementReference>vCaseId</elementReference></value>
+        </filters>
+        <getFirstRecordOnly>true</getFirstRecordOnly>
+        <object>Case</object>
+        <outputReference>vCase</outputReference>
+        <queriedFields>Id</queriedFields>
+        <queriedFields>Subject</queriedFields>
+        <queriedFields>Description</queriedFields>
+        <queriedFields>Status</queriedFields>
+        <queriedFields>Priority</queriedFields>
+        <queriedFields>Type</queriedFields>
+        <queriedFields>Origin</queriedFields>
+        <queriedFields>OwnerId</queriedFields>
+    </recordLookups>
+
+    <recordCreates>
+        <name>Create_Escalation_Risk_Failed_Task</name>
+        <label>Create Escalation Risk Assessment Failed Task</label>
+        <locationX>0</locationX><locationY>0</locationY>
+        <inputAssignments>
+            <field>Subject</field>
+            <value><stringValue>Escalation Risk Assessment Failed - Manual Review Required</stringValue></value>
+        </inputAssignments>
+        <inputAssignments>
+            <field>WhatId</field>
+            <value><elementReference>vCaseId</elementReference></value>
+        </inputAssignments>
+        <inputAssignments>
+            <field>Status</field>
+            <value><stringValue>Open</stringValue></value>
+        </inputAssignments>
+        <inputAssignments>
+            <field>Priority</field>
+            <value><stringValue>High</stringValue></value>
+        </inputAssignments>
+        <object>Task</object>
+    </recordCreates>
+
+    <variables>
+        <name>vCaseId</name>
+        <dataType>String</dataType>
+        <isCollection>false</isCollection>
+        <isInput>true</isInput>
+        <isOutput>false</isOutput>
+    </variables>
+    <variables>
+        <name>vPromptResponseJson</name>
+        <dataType>String</dataType>
+        <isCollection>false</isCollection>
+        <isInput>false</isInput>
+        <isOutput>false</isOutput>
+    </variables>
+    <variables>
+        <name>vCase</name>
+        <dataType>SObject</dataType>
+        <isCollection>false</isCollection>
+        <isInput>false</isInput>
+        <isOutput>false</isOutput>
+        <objectType>Case</objectType>
+    </variables>
+
+    <start>
+        <locationX>0</locationX><locationY>0</locationY>
+        <connector><targetReference>Fetch_Emails_And_Milestones</targetReference></connector>
+    </start>
+</Flow>

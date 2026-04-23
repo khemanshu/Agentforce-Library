@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>Escalation_Risk_Signals__c</fullName>
+    <label>Escalation Risk Signals</label>
+    <type>LongTextArea</type>
+    <length>32768</length>
+    <visibleLines>4</visibleLines>
+    <externalId>false</externalId>
+    <description>AI-detected escalation risk signals summary. Populated by Agentforce_Escalation_Risk_Assessment. KAN-19.</description>
+</CustomField>

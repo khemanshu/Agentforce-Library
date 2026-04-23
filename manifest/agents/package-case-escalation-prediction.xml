@@ -1,19 +1,14 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!--
-    Global Package Manifest - Hexaware Agentforce
-    Per-agent packages in manifest/agents/:
-      - package-intelligent-case-prioritization.xml  (KAN-12)
-      - package-auto-assign-account-and-contact.xml  (KAN-13)
-      - package-ai-productfamily-population.xml      (KAN-14)
-      - package-case-escalation-prediction.xml       (KAN-19)
+    Agent Package Manifest - Case Escalation Prediction - KAN-19
+    Post-deploy manual steps:
+      1. Activate Agentforce_Escalation_Risk_Assessment in Prompt Builder
+      2. Configure 6 Entitlement Milestone Warning/Violation actions to invoke CaseMilestone_EscalationRisk
+      3. Verify Einstein Trust Layer: ZDR ON, PII Masking ON
 -->
 <Package xmlns="http://soap.sforce.com/2006/04/metadata">
     <version>66.0</version>
     <types>
-        <members>CaseAgentTriageJsonParser</members>
-        <members>CaseAgentTriageJsonParserTest</members>
-        <members>CaseProductFamilyPromptAction</members>
-        <members>CaseProductFamilyPromptActionTest</members>
         <members>CaseEmailsPromptAction</members>
         <members>CaseEmailsPromptActionTest</members>
         <members>EscalationRiskFromPromptAction</members>
@@ -21,7 +16,6 @@
         <name>ApexClass</name>
     </types>
     <types>
-        <members>Case.ProductFamily__c</members>
         <members>Case.Escalation_Risk_Score__c</members>
         <members>Case.Escalation_Risk_Level__c</members>
         <members>Case.Escalation_Risk_Signals__c</members>
@@ -30,23 +24,13 @@
         <name>CustomField</name>
     </types>
     <types>
-        <members>Intelligent_Case_Prioritization</members>
-        <members>Case_Get_Contact_and_Account_by_Email</members>
-        <members>Case_Get_related_Tasks_Events</members>
         <members>EmailMessage_InboundOnCase_EscalationRisk</members>
         <members>CaseMilestone_EscalationRisk</members>
         <name>Flow</name>
     </types>
     <types>
-        <members>Intelligent_Case_Prioritization</members>
-        <members>Case_Get_Matching_Contact_and_Account</members>
-        <members>Agentforce_Case_ProductFamily_Detection</members>
         <members>Agentforce_Escalation_Risk_Assessment</members>
         <name>GenAiPromptTemplate</name>
-    </types>
-    <types>
-        <members>ServiceDeskAgentforcePermission</members>
-        <name>PermissionSet</name>
     </types>
     <types>
         <members>Case-Case Layout</members>
