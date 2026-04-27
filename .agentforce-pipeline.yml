@@ -1,0 +1,33 @@
+# Agentforce Ticket Pipeline — project configuration
+#
+# This file is read by the agentforce-ticket-pipeline Claude Code skill at
+# Phase 1 of every ticket. The skill itself is installed once at
+# ~/.claude/skills/agentforce-ticket-pipeline/ and is project-agnostic;
+# this file makes it project-aware.
+#
+# Commit this file so teammates inherit the same config when they clone the repo.
+
+# --- Jira ---
+jira_project: KAN
+
+# --- GitHub ---
+github_repo: khemanshu/Agentforce-Library
+github_default_branch: main
+
+# --- Confluence ---
+confluence_space: KAN
+confluence_tech_impl_folder: Agentforce Technical Implementation
+confluence_design_doc_folder: Agentforce Design Documents
+
+# --- Salesforce metadata layout ---
+global_manifest: manifest/package.xml
+agent_manifest_dir: manifest/agents/
+metadata_root: force-app/main/default
+salesforce_api_version: "66.0"
+
+# --- Git conventions ---
+branch_prefix: feature/
+
+# --- Optional ---
+apex_test_level: NoTestRun
+commit_signature: "🤖 Generated with Claude Code (Hexaware Agentforce Library)"
